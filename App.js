@@ -7,6 +7,7 @@ import React from "react";
 import Home from "./App/Screens/Home";
 
 export default function App() {
+
   return (
     <ClerkProvider
       publishableKey={"pk_test_Zml0LXJhdHRsZXItNDcuY2xlcmsuYWNjb3VudHMuZGV2JA"}
@@ -15,7 +16,6 @@ export default function App() {
         <SignedIn>
           <NavigationContainer>
             <TabNavigation />
-            <Home />
           </NavigationContainer>
         </SignedIn>
         <SignedOut>
@@ -29,8 +29,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
