@@ -1,48 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Modal, TextInput } from 'react-native';
-import DateTimePicker from 'react-native-modal-datetime-picker';
+import { View, Text, Button, TextInput } from 'react-native';
 
-export default function ModalAddAppointment({ isVisible, onClose, onAddAppointment }) {
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [appointmentName, setAppointmentName] = useState('');
 
-    const toggleModal = () => {
-        onClose();
-    };
 
-    const handleDatePicked = (date) => {
-        setSelectedDate(date);
-        toggleModal();
-    };
+export default function ModalAddAppointment({ onClose }) {
 
-    const handleAddAppointment = () => {
-        const formattedDate = selectedDate.toISOString().split('T')[0];
-        const appointment = { name: appointmentName };
-        onAddAppointment(formattedDate, appointment);
-        toggleModal();
+    const [startHour, setStartHour] = useState('');
+    const [endHour, setEndHour] = useState('');
+
+    const formatHour = (hour) => {
+        // Formate l'heure pour avoir 2 chiffres et ajoute 'h00' à la fin
+        if (hour.length === 1) {
+            return `0${hour}h00`;
+        } else if (hour.length === 2) {
+            return `${hour}h00`;
+        } else if (hour.length > 2) {
+            // Si l'heure a plus de 2 chiffres, ajoute 'h' entre les heures et les minutes
+            return `${hour.slice(0, 2)}h${hour.slice(2)}`;
+        }
+        return hour;
     };
 
     return (
-        <Modal
-            isVisible={isVisible}
-            onBackdropPress={toggleModal}
-            onBackButtonPress={toggleModal}
-        >
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Choose a Date</Text>
-                <DateTimePicker
-                    isVisible={isVisible}
-                    onConfirm={handleDatePicked}
-                    onCancel={toggleModal}
-                />
-                <Text>Appointment Name:</Text>
-                <TextInput
-                    value={appointmentName}
-                    onChangeText={(text) => setAppointmentName(text)}
-                />
-                <Button title="Valider" onPress={handleAddAppointment} />
-                <Button title="Fermer" onPress={toggleModal} />
-            </View>
-        </Modal>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'red' }}>
+            <Text>Modal test</Text>
+            <TextInput
+                placeholder="heure de début"
+                keyboardType="numeric"
+                value={startHour}
+                onChangeText={(text) => setStartHour(formatHour(text))}
+            />
+            <TextInput
+                placeholder="heure de fin"
+                keyboardType="numeric"
+                value={endHour}
+                onChangeText={(text) => setEndHour(formatHour(text))}
+            />
+            <Button title="Close" onPress={onClose} />
+        </View>
     );
 }
