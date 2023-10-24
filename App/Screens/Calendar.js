@@ -59,7 +59,7 @@ export default function Calendar() {
           )
         }}
       />
-      <Button title="Add Appointment" onPress={toggleModal} />
+      <Button title="Ajouter un RDV" onPress={toggleModal} />
       {isModalVisible &&
         <ModalAddAppointment
           onClose={toggleModal}
