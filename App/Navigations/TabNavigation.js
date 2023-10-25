@@ -3,30 +3,51 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../Screens/Home";
 import Calendar from "../Screens/Calendar";
 import Settings from "../Screens/Settings";
-import { Ionicons } from '@expo/vector-icons';
-import { Foundation } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import colors from "../colors";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigation() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Home" component={Home}
+    <Tab.Navigator screenOptions={{
+      headerShown: false,
+      tabBarActiveTintColor: colors.yellow,
+      tabBarActiveBackgroundColor: colors.blue,
+      tabBarInactiveBackgroundColor: colors.green,
+      tabBarInactiveTintColor: colors.blue,
+    }}>
+      <Tab.Screen name="Accueil" component={Home}
         options={{
+          tabBarStyle: {
+            color: colors.quaternary,
+          },
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={24} color="black" />
+            <Entypo name="home" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
           )
         }} />
-      <Tab.Screen name="Calendar" component={Calendar}
+      <Tab.Screen name="Agenda" component={Calendar}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Foundation name="calendar" size={24} color="black" />
+            <Entypo name="calendar" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
           )
         }} />
-      <Tab.Screen name="Settings" component={Settings}
+      <Tab.Screen name="liste course" component={Calendar}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={24} color="black" />
+            <Entypo name="shopping-cart" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+          )
+        }} />
+      <Tab.Screen name="à faire" component={Calendar}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="traffic-cone" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+          )
+        }} />
+      <Tab.Screen name="Paramètres" component={Settings}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="tools" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
           )
         }} />
     </Tab.Navigator>

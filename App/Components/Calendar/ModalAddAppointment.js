@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Octicons } from '@expo/vector-icons';
+import colors from '../../colors';
 
 export default function ModalAddAppointment({ onClose }) {
     const [date, setDate] = useState(new Date());
@@ -65,7 +66,7 @@ export default function ModalAddAppointment({ onClose }) {
             borderRadius: 5,
             padding: 15,
             margin: 5,
-            backgroundColor: '#FEDD00',
+            backgroundColor: colors.yellow,
             width: 300,
             color: '#009739',
         },
@@ -95,8 +96,8 @@ export default function ModalAddAppointment({ onClose }) {
     })
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: '#009739' }}>
-            <Text style={{ fontSize: 30, fontWeight: 700, color: '#012169', marginBottom: 60 }}>Ajouter un RDV</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: colors.green }}>
+            <Text style={{ fontSize: 30, fontWeight: 700, color: colors.blue, marginBottom: 60 }}>Ajouter un RDV</Text>
             <TouchableOpacity style={styles.TouchIcon} onPress={showDatepicker}>
                 <Text style={styles.textInside}>{date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <Octicons name="pencil" size={24} color="black" />

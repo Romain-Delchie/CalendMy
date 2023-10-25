@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import TabNavigation from "./App/Navigations/TabNavigation";
 import React from "react";
 import Home from "./App/Screens/Home";
+import colors from "./App/colors";
 
 export default function App() {
 
@@ -29,5 +30,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+  }
 });
