@@ -5,6 +5,8 @@ import Calendar from "../Screens/Calendar";
 import Settings from "../Screens/Settings";
 import { Entypo } from '@expo/vector-icons';
 import colors from "../colors";
+import Todo from "../Screens/Todo";
+import Lists from "../Screens/Lists";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,13 +34,13 @@ export default function TabNavigation() {
             <Entypo name="calendar" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
           )
         }} />
-      <Tab.Screen name="liste course" component={Calendar}
+      <Tab.Screen name="liste course" component={Lists}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Entypo name="shopping-cart" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
           )
         }} />
-      <Tab.Screen name="à faire" component={Calendar}
+      <Tab.Screen name="à faire" component={Todo}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Entypo name="traffic-cone" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
