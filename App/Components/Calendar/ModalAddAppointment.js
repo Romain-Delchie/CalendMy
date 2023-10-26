@@ -24,9 +24,6 @@ export default function ModalAddAppointment({ onClose }) {
             setEndHour(selectedDate.getHours() + ':' + selectedDate.getMinutes());
         }
     };
-    console.log('startHour: ' + startHour)
-    console.log('endHour: ' + endHour)
-    console.log('name: ' + name);
 
     const showMode = (currentMode) => {
         setShow(true);

@@ -79,7 +79,7 @@ export default function Lists() {
       justifyContent: "center",
       alignItems: "center",
       flexGrow: 1,
-      
+
     },
 
     buttonList: {
@@ -100,16 +100,19 @@ export default function Lists() {
     <View style={styles.containerList}>
       <Tab.Navigator
         screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: colors.yellow,
-          tabBarActiveBackgroundColor: colors.blue,
-          tabBarInactiveBackgroundColor: colors.green,
-          tabBarInactiveTintColor: colors.blue,
+          tabBarIndicatorStyle: {
+            backgroundColor: colors.secondary,
+          },
+          tabBarStyle: {
+            backgroundColor: colors.quinary,
+          },
+          tabBarActiveTintColor: colors.secondary,
+          tabBarInactiveTintColor: colors.primary,
         }}
       >
         {lists.map((list, index) => (
           <Tab.Screen
-            name={list.name}
+            name={lists.length > 3 ? (index + 1).toString() : list.name}
             key={index}
             children={() => <ListItem list={list} />}
           />

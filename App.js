@@ -4,8 +4,7 @@ import Login from "./App/Screens/Login/Login";
 import { NavigationContainer } from "@react-navigation/native";
 import TabNavigation from "./App/Navigations/TabNavigation";
 import React from "react";
-import Home from "./App/Screens/Home";
-import colors from "./App/colors";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
 
@@ -13,16 +12,18 @@ export default function App() {
     <ClerkProvider
       publishableKey={"pk_test_Zml0LXJhdHRsZXItNDcuY2xlcmsuYWNjb3VudHMuZGV2JA"}
     >
-      <SafeAreaView style={styles.container}>
-        <SignedIn>
-          <NavigationContainer>
-            <TabNavigation />
-          </NavigationContainer>
-        </SignedIn>
-        <SignedOut>
-          <Login />
-        </SignedOut>
-      </SafeAreaView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
+          <SignedIn>
+            <NavigationContainer>
+              <TabNavigation />
+            </NavigationContainer>
+          </SignedIn>
+          <SignedOut>
+            <Login />
+          </SignedOut>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </ClerkProvider>
   );
 }

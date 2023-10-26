@@ -14,10 +14,10 @@ export default function TabNavigation() {
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
-      tabBarActiveTintColor: colors.yellow,
-      tabBarActiveBackgroundColor: colors.blue,
-      tabBarInactiveBackgroundColor: colors.green,
-      tabBarInactiveTintColor: colors.blue,
+      tabBarActiveTintColor: colors.secondary,
+      tabBarActiveBackgroundColor: colors.tertiary,
+      tabBarInactiveBackgroundColor: colors.quaternary,
+      tabBarInactiveTintColor: colors.primary,
     }}>
       <Tab.Screen name="Accueil" component={Home}
         options={{
@@ -25,31 +25,31 @@ export default function TabNavigation() {
             color: colors.quaternary,
           },
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="home" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+            <Entypo name="home" size={24} color={color === colors.secondary ? colors.secondary : colors.primary} />
           )
         }} />
       <Tab.Screen name="Agenda" component={Calendar}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="calendar" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+            <Entypo name="calendar" size={24} color={color === colors.secondary ? colors.secondary : colors.primary} />
           )
         }} />
       <Tab.Screen name="liste course" component={Lists}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="shopping-cart" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+            <Entypo name="shopping-cart" size={24} color={color === colors.secondary ? colors.secondary : colors.primary} />
           )
         }} />
       <Tab.Screen name="à faire" component={Todo}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="traffic-cone" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+            <Entypo name="traffic-cone" size={24} color={color === colors.secondary ? colors.secondary : colors.primary} />
           )
         }} />
       <Tab.Screen name="Paramètres" component={Settings}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="tools" size={24} color={color === colors.yellow ? colors.yellow : colors.blue} />
+            <Entypo name="tools" size={24} color={color === colors.yellow ? colors.secondary : colors.primary} />
           )
         }} />
     </Tab.Navigator>
