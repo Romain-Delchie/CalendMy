@@ -189,7 +189,7 @@ export default function Todo() {
                     <TouchableOpacity
                         style={{
                             height: 100,
-                            backgroundColor: isActive ? "yellow" : getColorForRanking(item.ranking),
+                            backgroundColor: isActive ? colors.secondary : getColorForRanking(item.ranking),
                             alignItems: "center",
                             justifyContent: "space-between", // Add spacing between the item text and icon
                             flexDirection: "row", // Add a row layout for the icon
@@ -200,7 +200,7 @@ export default function Todo() {
                         <Text style={{
                             fontWeight: "bold",
                             color: "black",
-                            fontSize: 24,
+                            fontSize: 20,
                         }}>{item.name}</Text>
 
                         {/* Delete icon (Entypo icon) */}
@@ -210,7 +210,7 @@ export default function Todo() {
                             <Icon
                                 name="trash" // Replace with the name of the Entypo icon you want to use
                                 size={24}
-                                color="red" // Customize the icon color
+                                color={colors.quinary} // Customize the icon color
                             />
                         </TouchableOpacity>
                     </TouchableOpacity>

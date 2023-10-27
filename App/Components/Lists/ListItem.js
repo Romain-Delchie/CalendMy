@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, ScrollView, Button, Modal, TouchableOpacity, Image } from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Button, Modal, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
 import colors from "../../colors";
 import { Entypo } from "@expo/vector-icons";
 import { useUser } from '@clerk/clerk-expo'
@@ -7,6 +7,9 @@ import { useUser } from '@clerk/clerk-expo'
 export default function ListItem({ list }) {
     const { user } = useUser();
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [items, setItems] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+
     const listItems = [
         {
             id: 1,
@@ -150,6 +153,10 @@ export default function ListItem({ list }) {
         },
     ];
 
+    useEffect(() => {
+        setItems(listItems);
+    }, []);
+
     const styles = StyleSheet.create({
         listTitleContainer: {
             flexDirection: "row",
@@ -182,7 +189,7 @@ export default function ListItem({ list }) {
 
         },
         itemContainer: {
-            backgroundColor: colors.quinary,
+            backgroundColor: "lightgrey",
             paddingTop: 150,
             flexGrow: 1,
             justifyContent: "center",
@@ -244,8 +251,14 @@ export default function ListItem({ list }) {
     });
 
     const handleDeleteItem = (item) => {
-        console.log("delete item" + item.id);
+        setItems(items.filter((i) => i.id !== item.id));
     };
+
+    const addItem = () => {
+        console.log("add item");
+    };
+
+
     return (
         <ScrollView contentContainerStyle={styles.itemContainer}>
             <View style={styles.listTitleContainer}>
@@ -263,7 +276,7 @@ export default function ListItem({ list }) {
                     </View>
                 </Modal>
             </View>
-            {listItems
+            {items
                 .filter((item) => item.list_id === list.id)
                 .map((item, index) => (
                     <View key={index} style={styles.item}>
@@ -277,10 +290,21 @@ export default function ListItem({ list }) {
                     </View>
                 ))}
             {listItems.filter((item) => item.list_id === list.id).length === 0 && <Text>Aucun produit dans cette liste</Text>}
-            <TouchableOpacity style={styles.addItem}>
+            <TouchableOpacity style={styles.addItem} onPress={() => setModalVisible(true)}>
                 <Text style={styles.textItem}>Ajouter un produit</Text>
                 <Entypo name="plus" size={24} color={colors.secondary} />
             </TouchableOpacity>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+            >
+                <View style={{ backgroundColor: "yellow" }}>
+                    <Text>Êtes-vous sûr de vouloir supprimer la liste  ?</Text>
+                    <Button title="Oui" onPress={() => handleDeleteList(list)} />
+                    <Button title="Non" onPress={() => setConfirmDelete(false)} />
+                </View>
+            </Modal>
             <TouchableOpacity style={styles.deleteAllItem}>
                 <Text style={styles.textItemDelete}>Supprimer tous les produits</Text>
                 <Entypo name="trash" size={24} color="black" />
