@@ -171,13 +171,16 @@ export default function ListItem({ list }) {
 
   const styles = StyleSheet.create({
     listTitleContainer: {
+      borderColor: colors.borderSubtitle,
+      borderStyle: "solid",
+      borderWidth: 1,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       paddingLeft: 20,
       width: 270,
       height: 70,
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.backgroundSubt,
       marginBottom: 30,
       paddingRight: 11,
       position: "absolute",
@@ -187,7 +190,7 @@ export default function ListItem({ list }) {
       left: 0,
     },
     listTitle: {
-      color: colors.secondary,
+      color: colors.textLowContrast,
       fontSize: 20,
       fontWeight: "bold",
     },
@@ -200,7 +203,7 @@ export default function ListItem({ list }) {
       height: "100%",
     },
     itemContainer: {
-      backgroundColor: "lightgrey",
+      backgroundColor: colors.background,
       paddingTop: 150,
       flexGrow: 1,
       justifyContent: "center",
@@ -212,8 +215,8 @@ export default function ListItem({ list }) {
       borderRadius: 5,
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: colors.quaternary,
-      borderColor: colors.tertiary,
+      backgroundColor: colors.backgroundElement,
+      borderColor: colors.borderElement,
       borderStyle: "solid",
       borderWidth: 1,
       padding: 10,
@@ -225,10 +228,7 @@ export default function ListItem({ list }) {
       borderRadius: 5,
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: colors.tertiary,
-      borderColor: colors.tertiary,
-      borderStyle: "solid",
-      borderWidth: 1,
+      backgroundColor: colors.backgroundSolid,
       padding: 10,
       width: 300,
       height: 70,
@@ -238,23 +238,21 @@ export default function ListItem({ list }) {
       borderRadius: 5,
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: colors.secondary,
-      borderColor: colors.primary,
-      borderStyle: "solid",
-      borderWidth: 3,
+      backgroundColor: colors.backgroundSolid,
       padding: 10,
       width: 300,
       height: 70,
       marginBottom: 50,
+      marginTop: 30,
     },
 
     textItem: {
-      color: colors.secondary,
+      color: colors.textHighContrast,
       fontSize: 15,
       width: 200,
     },
     textItemDelete: {
-      color: colors.tertiary,
+      color: "red",
       fontSize: 15,
       width: 200,
     },
@@ -289,7 +287,7 @@ export default function ListItem({ list }) {
         <Entypo
           name="trash"
           size={24}
-          color={colors.primary}
+          color={colors.textLowContrast}
           onPress={() => setConfirmDelete(true)}
         />
         <Modal animationType="slide" transparent={true} visible={confirmDelete}>
@@ -309,7 +307,7 @@ export default function ListItem({ list }) {
               onPress={() => handleDeleteItem(item)}
               name="trash"
               size={24}
-              color={colors.secondary}
+              color={colors.textHighContrast}
             />
           </View>
         ))}
@@ -321,7 +319,7 @@ export default function ListItem({ list }) {
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.textItem}>Ajouter un produit</Text>
-        <Entypo name="plus" size={24} color={colors.secondary} />
+        <Entypo name="plus" size={24} color={colors.textHighContrast} />
       </TouchableOpacity>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={{ backgroundColor: "yellow" }}>
@@ -340,7 +338,7 @@ export default function ListItem({ list }) {
         onPress={() => setModalDeleteAll(true)}
       >
         <Text style={styles.textItemDelete}>Supprimer tous les produits</Text>
-        <Entypo name="trash" size={24} color="black" />
+        <Entypo name="trash" size={24} color="red" />
       </TouchableOpacity>
       <Modal animationType="slide" transparent={true} visible={modalDeleteAll}>
         <View style={{ backgroundColor: "yellow" }}>
