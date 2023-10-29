@@ -171,9 +171,6 @@ export default function ListItem({ list }) {
 
   const styles = StyleSheet.create({
     listTitleContainer: {
-      borderColor: colors.borderSubtitle,
-      borderStyle: "solid",
-      borderWidth: 1,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -216,9 +213,6 @@ export default function ListItem({ list }) {
       alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: colors.backgroundElement,
-      borderColor: colors.borderElement,
-      borderStyle: "solid",
-      borderWidth: 1,
       padding: 10,
       width: 300,
       height: 70,
