@@ -20,6 +20,7 @@ export default function ListItem({ list }) {
 
   const [items, setItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalDeleteAll, setModalDeleteAll] = useState(false);
 
   const listItems = [
     {
@@ -276,6 +277,11 @@ export default function ListItem({ list }) {
     onChangeText("");
   };
 
+  const handleDeleteAllItem = () => {
+    setItems(items.filter((item) => item.list_id !== list.id));
+    setModalDeleteAll(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.itemContainer}>
       <View style={styles.listTitleContainer}>
@@ -325,14 +331,31 @@ export default function ListItem({ list }) {
             onChangeText={(text) => onChangeText(text)}
             value={text}
           />
-          <Button title="Oui" onPress={() => handleAddItem()} />
+          <Button title="Oui" onPress={handleAddItem} />
           <Button title="Non" onPress={() => setModalVisible(false)} />
         </View>
       </Modal>
-      <TouchableOpacity style={styles.deleteAllItem}>
+      <TouchableOpacity
+        style={styles.deleteAllItem}
+        onPress={() => setModalDeleteAll(true)}
+      >
         <Text style={styles.textItemDelete}>Supprimer tous les produits</Text>
         <Entypo name="trash" size={24} color="black" />
       </TouchableOpacity>
+      <Modal animationType="slide" transparent={true} visible={modalDeleteAll}>
+        <View style={{ backgroundColor: "yellow" }}>
+          <Text>
+            Etes vous sur de vouloir supprimer TOUS les produits de la list
+          </Text>
+          <TextInput
+            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+            onChangeText={(text) => onChangeText(text)}
+            value={text}
+          />
+          <Button title="Oui" onPress={handleDeleteAllItem} />
+          <Button title="Non" onPress={() => setModalDeleteAll(false)} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
