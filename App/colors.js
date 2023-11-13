@@ -10,7 +10,7 @@ const colors = {
   backgroundSolid: "#00a2c7",
   backgroundSolidHovered: "#0797b9",
   textLowContrast: "#107d98",
-    textHighContrast: "#0d3c48",
+  textHighContrast: "#0d3c48",
 };
 
 export default colors;

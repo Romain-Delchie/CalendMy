@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import TabNavigation from "./App/Navigations/TabNavigation";
 import React from "react";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AppProvider from "./App/Context/AppProvider";
 
 export default function App() {
 
@@ -12,6 +13,7 @@ export default function App() {
     <ClerkProvider
       publishableKey={"pk_test_Zml0LXJhdHRsZXItNDcuY2xlcmsuYWNjb3VudHMuZGV2JA"}
     >
+      <AppProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaView style={styles.container}>
           <SignedIn>
@@ -23,7 +25,8 @@ export default function App() {
             <Login />
           </SignedOut>
         </SafeAreaView>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </AppProvider>
     </ClerkProvider>
   );
 }

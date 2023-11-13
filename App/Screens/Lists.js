@@ -72,7 +72,7 @@ export default function Lists() {
 
   const styles = StyleSheet.create({
     containerList: {
-      backgroundColor: colors.quaternary,
+      backgroundColor: colors.backgroundSolid,
       flexDirection: "row",
       paddingTop: 50,
       gap: 10,
@@ -83,7 +83,7 @@ export default function Lists() {
     },
 
     buttonList: {
-      backgroundColor: colors.blue,
+      backgroundColor: colors.backgroundElement,
       padding: 10,
       width: 100,
       height: 60,
@@ -101,10 +101,10 @@ export default function Lists() {
       <Tab.Navigator
         screenOptions={{
           tabBarIndicatorStyle: {
-            backgroundColor: colors.secondary,
+            backgroundColor: colors.backgroundSolidHovered,
           },
           tabBarStyle: {
-            backgroundColor: colors.quinary,
+            backgroundColor: colors.backgroundSolid,
           },
           tabBarActiveTintColor: colors.secondary,
           tabBarInactiveTintColor: colors.primary,
