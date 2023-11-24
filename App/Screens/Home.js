@@ -73,16 +73,15 @@ export default function Home() {
       })
       .catch((err) => console.log(err));
   }, []);
-
+  console.log(toDoItems);
   return (
     <View style={{ padding: 20, marginTop: 25 }}>
       <Header />
       {/* <Button title="Sign Out" onPress={() => signOut()} /> */}
-      <View style={{ alignItems: "center", justifyContent:"space-between", marginTop:50, gap:10 }}>
+      <View style={{ alignItems: "center", justifyContent: "space-between", marginTop: 10, gap: 10, flex: 2 }}>
         <View style={{ gap: 10 }}>
-          <Text style={{textAlign:"center", margin:20, fontSize:20, textTransform:"capitalize", fontWeight:700, color: colors.textHighContrast}}>{today}</Text>
-          {events &&
-          events.filter((event) => event.date === todayDate).length > 0 ? (
+          <Text style={{ textAlign: "center", margin: 20, fontSize: 20, textTransform: "capitalize", fontWeight: 700, color: colors.textHighContrast }}>{today}</Text>
+          {!events && events?.filter((event) => event.date === todayDate).length > 0 ? (
             events
               .filter((event) => event.date === todayDate)
               .sort((a, b) => {
@@ -109,10 +108,10 @@ export default function Home() {
                     }}
                   >
                     <View style={{}}>
-                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight:700 }}>
+                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight: 700 }}>
                         {moment(event.begin, "HH:mm:ss.SSS").format("HH:mm")}
                       </Text>
-                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight:700 }}>
+                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight: 700 }}>
                         {moment(event.end, "HH:mm:ss.SSS").format("HH:mm")}
                       </Text>
                     </View>
@@ -135,9 +134,9 @@ export default function Home() {
         </View>
         <View>
           {toDoItems &&
-          toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
-            <View style={{backgroundColor: colors.backgroundActive, padding:15, borderRadius:10, borderBottomColor:colors.backgroundSolid, borderBottomWidth:2, borderLeftColor:colors.backgroundSolid, borderLeftWidth:2}}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", textAlign:"center" }}>
+            toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
+            <View style={{ backgroundColor: colors.backgroundActive, padding: 15, borderRadius: 10, borderBottomColor: colors.backgroundSolid, borderBottomWidth: 2, borderLeftColor: colors.backgroundSolid, borderLeftWidth: 2 }}>
+              <Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center" }}>
                 Tâches prioritaires
               </Text>
               {toDoItems
@@ -158,11 +157,11 @@ export default function Home() {
             </View>
           )}
         </View>
-             
-          <Image
-            source={thiago}
-            style={{ borderRadius: 15, width: "120%", height: 200, marginTop:70 }}
-          />
+
+        <Image
+          source={thiago}
+          style={{ borderRadius: 15, width: "120%", height: 200, marginTop: 70 }}
+        />
       </View>
     </View>
   );

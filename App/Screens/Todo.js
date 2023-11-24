@@ -1,18 +1,16 @@
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Modal,
-  Button,
+  StyleSheet,
   TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import DraggableFlatList, {
-  NestableScrollContainer,
-} from "react-native-draggable-flatlist";
+import DraggableFlatList from "react-native-draggable-flatlist";
 import Icon from "react-native-vector-icons/Entypo";
 import colors from "../colors";
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Todo() {
   const todos = [
@@ -83,19 +81,25 @@ export default function Todo() {
     setSortedTodos(myData.sort((a, b) => a.ranking - b.ranking));
   }, [initialData]);
 
-  // Associez une couleur à chaque tâche en fonction de l'importance (nuances de rouge à blanc)
   const getColorForRanking = (ranking) => {
     const maxRanking = sortedTodos.length;
-    const hue = (ranking / maxRanking) * 0; // 0 = Rouge, 1 = Blanc
-    const lightness = 50 + (ranking / maxRanking) * 50; // 50% à 100% de luminosité
-    return `hsl(0, 100%, ${lightness}%)`;
-  };
+    const startColor = [0, 162, 199]; // RGB pour #00a2c7
+    const endColor = [255, 255, 255]; // RGB pour #ffffff (blanc)
 
+    const interpolateColor = (start, end, percent) => {
+      const result = start.map((value, index) => {
+        const delta = end[index] - value;
+        return Math.round(value + delta * percent);
+      });
+      return `rgb(${result.join(',')})`;
+    };
+
+    const hue = interpolateColor(startColor, endColor, ranking / maxRanking);
+    return hue;
+  };
   const handleDragEnd = ({ data, from, to }) => {
     const draggedItem = data.find((item) => item.ranking === from);
-    console.log(draggedItem);
     const draggedItems = data.slice(from, to + 1);
-    console.log(draggedItems);
     const updatedData = data.map((item) => {
       if (item.ranking === from) {
         return { ...item, ranking: to };
@@ -145,9 +149,10 @@ export default function Todo() {
       <TouchableOpacity
         style={{
           height: 100,
-          backgroundColor: colors.tertiary,
           alignItems: "center",
-          justifyContent: "center", // Add spacing between the item text and icon
+          justifyContent: "center",
+          paddingTop: 40,
+          gap: 10,
           flexDirection: "row", // Add a row layout for the icon
           paddingHorizontal: 10, // Add padding for better spacing
         }}
@@ -158,14 +163,15 @@ export default function Todo() {
         <Text
           style={{
             fontWeight: "bold",
-            color: "red",
+            color: colors.textHighContrast,
             fontSize: 24,
           }}
         >
           Ajouter une tâche
         </Text>
+        <MaterialIcons name="playlist-add" size={40} color={colors.textHighContrast} />
       </TouchableOpacity>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal animationType="slide" transparent={false} visible={modalVisible}>
         <View
           style={{
             bottom: 0,
@@ -182,12 +188,17 @@ export default function Todo() {
               height: 40,
               width: 200,
               borderColor: "gray",
+              marginBottom: 50,
               borderWidth: 1,
             }}
             onChangeText={(text) => onChangeText(text)}
           />
-          <Button title="Ajouter" onPress={() => handleAddTask()} />
-          <Button title="Annuler" onPress={() => setModalVisible(false)} />
+          <TouchableOpacity style={styles.modalButton} onPress={() => handleAddTask()}>
+            <Text>Ajouter une tâche</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+            <Text>Annuler</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
       <DraggableFlatList
@@ -213,9 +224,8 @@ export default function Todo() {
                 fontSize: 20,
               }}
             >
-              {item.name}
+              {item.ranking + 1} - {item.name}
             </Text>
-
             {/* Delete icon (Entypo icon) */}
             <TouchableOpacity
               onPress={() => handleDelete(item.id)} // Define a function to handle the delete action
@@ -234,3 +244,13 @@ export default function Todo() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  modalButton: {
+    backgroundColor: colors.backgroundActive,
+    borderRadius: 5,
+    padding: 15,
+    margin: 10,
+    width: 300,
+    alignItems: "center",
+  },
+});

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import {
   View,
   Text,
-  Button,
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -13,6 +13,7 @@ import { Octicons } from "@expo/vector-icons";
 import colors from "../../colors";
 
 export default function ModalAddAppointment({ onClose }) {
+  const { events, updateEvents } = useContext(AppContext);
   const [date, setDate] = useState(new Date());
   const [startHour, setStartHour] = useState("");
   const [endHour, setEndHour] = useState("");
@@ -21,6 +22,24 @@ export default function ModalAddAppointment({ onClose }) {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [instruction, setInstruction] = useState("");
+  const [inputStates, setInputStates] = useState({
+    input1: false,
+    input2: false,
+  });
+
+  const handleFocus = (inputName) => {
+    setInputStates((prevInputStates) => ({
+      ...prevInputStates,
+      [inputName]: true,
+    }));
+  };
+
+  const handleBlur = (inputName) => {
+    setInputStates((prevInputStates) => ({
+      ...prevInputStates,
+      [inputName]: false,
+    }));
+  };
 
   const onChange = (event, selectedDate) => {
     setShow(false);
@@ -61,7 +80,7 @@ export default function ModalAddAppointment({ onClose }) {
       date: date,
     };
     API.addEvent(appointment);
-
+    updateEvents([...events, appointment]);
     onClose();
   };
   const styles = StyleSheet.create({
@@ -70,38 +89,36 @@ export default function ModalAddAppointment({ onClose }) {
       width: 280,
       margin: 12,
       borderWidth: 1,
-      backgroundColor: "#FEDD00",
+      backgroundColor: colors.backgroundElement,
     },
 
     TouchIcon: {
       flexDirection: "row",
-      // border: '1px solid black',
+      justifyContent: "space-between",
       borderRadius: 5,
       padding: 15,
       margin: 5,
-      backgroundColor: colors.yellow,
       width: 300,
-      color: "#009739",
+      color: colors.textLowContrast,
     },
     textInside: {
       width: 200,
       fontSize: 15,
-      color: "#009739",
+      color: colors.textLowContrast,
       marginRight: 10,
     },
     btnCross: {
       position: "absolute",
       top: 50,
       right: 20,
-      backgroundColor: "#009739",
-      color: "#FEDD00",
+      color: colors.textHighContrast,
       borderRadius: 50,
     },
     btnValidate: {
-      backgroundColor: "#012169",
+      backgroundColor: colors.backgroundActive,
       borderRadius: 5,
       padding: 15,
-      margin: 5,
+      margin: 30,
       width: 300,
       alignItems: "center",
     },
@@ -125,7 +142,7 @@ export default function ModalAddAppointment({ onClose }) {
         style={{
           fontSize: 30,
           fontWeight: 700,
-          color: colors.blue,
+          color: colors.textHighContrast,
           marginBottom: 60,
         }}
       >
@@ -139,43 +156,49 @@ export default function ModalAddAppointment({ onClose }) {
             "/" +
             date.getFullYear()}
         </Text>
-        <Octicons name="pencil" size={24} color="black" />
+        <Octicons name="pencil" size={24} color={colors.textHighContrast} />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.TouchIcon}
         onPress={() => showTimepicker("start")}
       >
         <Text style={styles.textInside}>{"Heure de début: " + startHour}</Text>
-        <Octicons name="pencil" size={24} color="black" />
+        <Octicons name="pencil" size={24} />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.TouchIcon}
         onPress={() => showTimepicker("end")}
       >
         <Text style={styles.textInside}>{"Heure de fin: " + endHour}</Text>
-        <Octicons name="pencil" size={24} color="black" />
+        <Octicons name="pencil" size={24} />
       </TouchableOpacity>
       <TextInput
-        style={styles.TouchIcon}
+        style={[styles.TouchIcon, { backgroundColor: inputStates.input1 ? colors.backgroundElement : "transparent" }]}
         placeholder="Nom du rendez-vous"
+        placeholderTextColor={inputStates.input2 ? colors.textHighContrast : colors.textLowContrast}
         onChangeText={(text) => setName(text)}
+        onFocus={() => handleFocus('input1')}
+        onBlur={() => handleBlur('input1')}
       />
       <TextInput
-        style={styles.TouchIcon}
+        style={[styles.TouchIcon, { backgroundColor: inputStates.input2 ? colors.backgroundElement : "transparent" }]}
         placeholder="instruction"
+        placeholderTextColor={inputStates.input2 ? colors.textHighContrast : colors.textLowContrast}
         onChangeText={(text) => setInstruction(text)}
+        onFocus={() => handleFocus('input2')}
+        onBlur={() => handleBlur('input2')}
       />
       <TouchableOpacity
         title="Ajouter le rendez-vous"
         onPress={handleAddAppointment}
         style={styles.btnValidate}
       >
-        <Text style={{ color: "#FEDD00", fontSize: 20 }}>
+        <Text style={{ color: colors.textHighContrast, fontSize: 20, fontWeight: "bold" }}>
           Ajouter le rendez-vous
         </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={onClose} style={styles.btnCross}>
-        <Octicons name="x" size={40} color="#012169" />
+        <Octicons name="x" size={40} />
       </TouchableOpacity>
       {show && (
         <DateTimePicker
