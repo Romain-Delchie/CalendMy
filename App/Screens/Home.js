@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import React, { useEffect, useContext } from "react";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import Header from "../Components/Home/Header";
@@ -26,117 +26,137 @@ export default function Home() {
     toDoItems,
     updateToDoItems,
   } = useContext(AppContext);
-
-  console.log(userConnected.emailAddresses[0].emailAddress);
-  useEffect(() => {
-    API.getCalendmy()
-      .then((res) => {
-        console.log(res.data.data[0].attributes);
-        updateUser({
-          ...user,
-          calendmyName: res.data.data[0].attributes.name,
-        });
-        updateEvents(
-          res.data.data[0].attributes.events.data.map((event) => {
-            return {
-              date: event.attributes.date,
-              name: event.attributes.name,
-              begin: event.attributes.begin,
-              end: event.attributes.end,
-              instruction: event.attributes.instruction,
-            };
-          })
-        );
-        updateShoppingLists(
-          res.data.data[0].attributes.shopping_lists.data.map((list) => {
-            return {
-              name: list.attributes.name,
-              listItems: list.attributes.list_items.data.map((item) => {
-                return {
-                  name: item.attributes.name,
-                  quantity: item.attributes.quantity,
-                };
-              }),
-            };
-          })
-        );
-        updateToDoItems(
-          res.data.data[0].attributes.to_do.data.attributes.todo_items.data.map(
-            (item) => {
-              return {
-                name: item.attributes.name,
-                ranking: item.attributes.ranking,
-              };
-            }
-          )
-        );
-      })
-      .catch((err) => console.log(err));
-  }, []);
-  console.log(toDoItems);
+console.log(events);
+  // console.log(userConnected.emailAddresses[0].emailAddress);
+ 
+  if (events === null || toDoItems === null) {
+    return null;
+  }
   return (
-    <View style={{ padding: 20, marginTop: 25 }}>
+    <View style={{ padding: 20, marginTop: 25, height: "100%" }}>
       <Header />
       {/* <Button title="Sign Out" onPress={() => signOut()} /> */}
-      <View style={{ alignItems: "center", justifyContent: "space-between", marginTop: 10, gap: 10, flex: 2 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 10,
+          gap: 10,
+          flex: 2,
+        }}
+      >
         <View style={{ gap: 10 }}>
-          <Text style={{ textAlign: "center", margin: 20, fontSize: 20, textTransform: "capitalize", fontWeight: 700, color: colors.textHighContrast }}>{today}</Text>
-          {!events && events?.filter((event) => event.date === todayDate).length > 0 ? (
-            events
-              .filter((event) => event.date === todayDate)
-              .sort((a, b) => {
-                const timeA = new Date(`1970-01-01T${a.begin}`);
-                const timeB = new Date(`1970-01-01T${b.begin}`);
-                return timeA - timeB;
-              })
-              .map((event, index) => {
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      backgroundColor: colors.backgroundElement,
-                      borderRadius: 15,
-                      gap: 10,
-                      padding: 10,
-                      borderBottomColor: colors.borderElement,
-                      borderBottomWidth: 2,
-                      borderRightColor: colors.borderElement,
-                      borderRightWidth: 2,
-                    }}
-                  >
-                    <View style={{}}>
-                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight: 700 }}>
-                        {moment(event.begin, "HH:mm:ss.SSS").format("HH:mm")}
-                      </Text>
-                      <Text style={{ fontSize: 16, marginBottom: 10, color: colors.textHighContrast, fontWeight: 700 }}>
-                        {moment(event.end, "HH:mm:ss.SSS").format("HH:mm")}
-                      </Text>
-                    </View>
-                    <View style={{ width: "60%" }}>
-                      <Text style={{ fontSize: 18, color: colors.textLowContrast }}>
-                        {event.name}
-                      </Text>
-                      <Text style={{ fontSize: 16 }}>{event.instruction}</Text>
-                    </View>
-                  </View>
-                );
-              })
-          ) : (
-            <View style={{}}>
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                Aucun évènement prévu aujourd'hui
-              </Text>
-            </View>
-          )}
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 20,
+              fontSize: 20,
+              textTransform: "capitalize",
+              fontWeight: 700,
+              color: colors.textHighContrast,
+            }}
+          >
+            {today}
+          </Text>
         </View>
+        <ScrollView>
+          <View style={{ gap: 10 }}>
+            {events.filter((event) => event.date === todayDate).length > 0 ? (
+              events
+                .filter((event) => event.date === todayDate)
+                .sort((a, b) => {
+                  const timeA = new Date(`1970-01-01T${a.begin}`);
+                  const timeB = new Date(`1970-01-01T${b.begin}`);
+                  return timeA - timeB;
+                })
+                .map((event, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        backgroundColor: colors.backgroundElement,
+                        borderRadius: 15,
+                        gap: 10,
+                        padding: 10,
+                        borderBottomColor: colors.borderElement,
+                        borderBottomWidth: 2,
+                        borderRightColor: colors.borderElement,
+                        borderRightWidth: 2,
+                      }}
+                    >
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginBottom: 10,
+                            color: colors.textHighContrast,
+                            fontWeight: 700,
+                          }}
+                        >
+                          {moment(event.begin, "HH:mm:ss.SSS").format("HH:mm")}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginBottom: 10,
+                            color: colors.textHighContrast,
+                            fontWeight: 700,
+                          }}
+                        >
+                          {moment(event.end, "HH:mm:ss.SSS").format("HH:mm")}
+                        </Text>
+                      </View>
+                      <View style={{ width: "60%" }}>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            color: colors.textLowContrast,
+                          }}
+                        >
+                          {event.name}
+                        </Text>
+                        {event.instruction && (
+                          <Text style={{ fontSize: 16 }}>
+                            {event.instruction}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                  );
+                })
+            ) : (
+              <View>
+                <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                  Aucun évènement prévu aujourd'hui
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
         <View>
           {toDoItems &&
-            toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
-            <View style={{ backgroundColor: colors.backgroundActive, padding: 15, borderRadius: 10, borderBottomColor: colors.backgroundSolid, borderBottomWidth: 2, borderLeftColor: colors.backgroundSolid, borderLeftWidth: 2 }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center" }}>
+          toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
+            <View
+              style={{
+                backgroundColor: colors.backgroundActive,
+                padding: 15,
+                borderRadius: 10,
+                borderBottomColor: colors.backgroundSolid,
+                borderBottomWidth: 2,
+                borderLeftColor: colors.backgroundSolid,
+                borderLeftWidth: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
                 Tâches prioritaires
               </Text>
               {toDoItems
@@ -150,7 +170,7 @@ export default function Home() {
                 })}
             </View>
           ) : (
-            <View style={styles.card}>
+            <View>
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                 Aucune tâche prioritaire
               </Text>
@@ -160,11 +180,13 @@ export default function Home() {
 
         <Image
           source={thiago}
-          style={{ borderRadius: 15, width: "120%", height: 200, marginTop: 70 }}
+          style={{
+            borderRadius: 15,
+            width: "120%",
+            height: 200,
+          }}
         />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

@@ -1,5 +1,6 @@
 import { View, Text, Button, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
+import moment from "moment";
 import AppContext from "../Context/AppContext";
 import { Calendar as CalendarComponent, Agenda } from "react-native-calendars";
 import ModalAddAppointment from "../Components/Calendar/ModalAddAppointment";
@@ -12,121 +13,25 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
-    // const newItems = {};
-    // events?.map((event) => {
-    //   newItems[event.date] = [
-    //     ...(newItems[event.date] || []),
-    //     {
-    //       name: event.name,
-    //       begin: event.begin,
-    //       end: event.end,
-    //       instruction: event.instruction,
-    //     },
-    //   ];
-    // });
-    // setItems(newItems);
-    setItems({
-      "2023-11-21": [
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 1",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 2",
-          begin: "11:00",
-          end: "12:00",
-          instruction: "Prendre la tension",
-        },
-      ],
-      "2023-11-22": [
-        {
-          name: "RDV 3",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 4",
-          begin: "11:00",
-          end: "12:00",
-        },
-      ],
-      "2024-05-22": [
-        {
-          name: "RDV 3",
-          begin: "10:00",
-          end: "11:00",
-          instruction: "Prendre la tension",
-        },
-        {
-          name: "RDV 4",
-          begin: "11:00",
-          end: "12:00",
-        },
-      ],
-    });
+    const newItems = {};
+    events
+      ?.sort((a, b) => {
+        const timeA = new Date(`1970-01-01T${a.begin}`);
+        const timeB = new Date(`1970-01-01T${b.begin}`);
+        return timeA - timeB;
+      })
+      .map((event) => {
+        newItems[event.date] = [
+          ...(newItems[event.date] || []),
+          {
+            name: event.name,
+            begin: event.begin,
+            end: event.end,
+            instruction: event.instruction,
+          },
+        ];
+      });
+    setItems(newItems);
   }, [events]);
 
   const addAppointment = (date, appointment) => {
@@ -157,14 +62,16 @@ export default function Calendar() {
           setSelectedDate(day.dateString);
         }}
         // Callback that gets called when day changes while scrolling agenda list
-        onDayChange={(day) => { }}
+        onDayChange={(day) => {}}
         selected={selectedDate}
         // Fonction pour rendre un élément de rendez-vous
         renderItem={(item) => {
           if (!item || item.length === 0) {
             return (
               <View style={styles.noAppointmentsContainer}>
-                <Text style={styles.noAppointmentsText}>Pas de rendez-vous</Text>
+                <Text style={styles.noAppointmentsText}>
+                  Pas de rendez-vous
+                </Text>
               </View>
             );
           } else {
@@ -177,14 +84,33 @@ export default function Calendar() {
                 >
                   <View style={styles.RdvContainer}>
                     <View style={styles.hours}>
-                      <Text style={{ fontWeight: "bold", fontSize: 20 }}>{item.begin} - </Text>
-                      <Text style={{ fontWeight: "bold", fontSize: 20 }}> {item.end}</Text>
+                      <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                        {moment(item.begin, "HH:mm:ss.SSS").format("HH:mm")}
+                        {" - "}
+                      </Text>
+                      <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                        {" "}
+                        {moment(item.end, "HH:mm:ss.SSS").format("HH:mm")}
+                      </Text>
                     </View>
-                    <Text style={{ fontWeight: "bold", color: colors.textHighContrast }}>{item.name}</Text>
-                    <Text style={{ fontWeight: "bold", color: colors.textLowContrast }}>{item?.instruction}</Text>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        color: colors.textHighContrast,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        color: colors.textLowContrast,
+                      }}
+                    >
+                      {item?.instruction}
+                    </Text>
                   </View>
-                  <View style={styles.TouchIcon}>
-                  </View>
+                  <View style={styles.TouchIcon}></View>
                 </TouchableOpacity>
               </View>
             );
@@ -244,5 +170,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-
 });

@@ -46,9 +46,19 @@ export default function ModalAddAppointment({ onClose }) {
     const currentDate = selectedDate;
     setDate(currentDate);
     if (startOrEnd == "start") {
-      setStartHour(selectedDate.getHours() + ":" + selectedDate.getMinutes());
+      setStartHour(
+        selectedDate.getHours() +
+          ":" +
+          (selectedDate.getMinutes() < 10 ? "0" : "") +
+          selectedDate.getMinutes()
+      );
     } else if (startOrEnd == "end") {
-      setEndHour(selectedDate.getHours() + ":" + selectedDate.getMinutes());
+      setEndHour(
+        selectedDate.getHours() +
+          ":" +
+          (selectedDate.getMinutes() < 10 ? "0" : "") +
+          selectedDate.getMinutes()
+      );
     }
   };
 
@@ -73,12 +83,17 @@ export default function ModalAddAppointment({ onClose }) {
 
   const handleAddAppointment = () => {
     const appointment = {
-      name: name,
-      begin: startHour,
-      end: endHour,
-      instruction: instruction,
-      date: date,
+      data: {
+        name: name,
+        begin: startHour + ":00",
+        end: endHour + ":00",
+        instruction: instruction,
+        date: date,
+        //TO DO : add id logic
+        calend_my: 1,
+      },
     };
+
     API.addEvent(appointment);
     updateEvents([...events, appointment]);
     onClose();
@@ -173,27 +188,51 @@ export default function ModalAddAppointment({ onClose }) {
         <Octicons name="pencil" size={24} />
       </TouchableOpacity>
       <TextInput
-        style={[styles.TouchIcon, { backgroundColor: inputStates.input1 ? colors.backgroundElement : "transparent" }]}
+        style={[
+          styles.TouchIcon,
+          {
+            backgroundColor: inputStates.input1
+              ? colors.backgroundElement
+              : "transparent",
+          },
+        ]}
         placeholder="Nom du rendez-vous"
-        placeholderTextColor={inputStates.input2 ? colors.textHighContrast : colors.textLowContrast}
+        placeholderTextColor={
+          inputStates.input2 ? colors.textHighContrast : colors.textLowContrast
+        }
         onChangeText={(text) => setName(text)}
-        onFocus={() => handleFocus('input1')}
-        onBlur={() => handleBlur('input1')}
+        onFocus={() => handleFocus("input1")}
+        onBlur={() => handleBlur("input1")}
       />
       <TextInput
-        style={[styles.TouchIcon, { backgroundColor: inputStates.input2 ? colors.backgroundElement : "transparent" }]}
+        style={[
+          styles.TouchIcon,
+          {
+            backgroundColor: inputStates.input2
+              ? colors.backgroundElement
+              : "transparent",
+          },
+        ]}
         placeholder="instruction"
-        placeholderTextColor={inputStates.input2 ? colors.textHighContrast : colors.textLowContrast}
+        placeholderTextColor={
+          inputStates.input2 ? colors.textHighContrast : colors.textLowContrast
+        }
         onChangeText={(text) => setInstruction(text)}
-        onFocus={() => handleFocus('input2')}
-        onBlur={() => handleBlur('input2')}
+        onFocus={() => handleFocus("input2")}
+        onBlur={() => handleBlur("input2")}
       />
       <TouchableOpacity
         title="Ajouter le rendez-vous"
         onPress={handleAddAppointment}
         style={styles.btnValidate}
       >
-        <Text style={{ color: colors.textHighContrast, fontSize: 20, fontWeight: "bold" }}>
+        <Text
+          style={{
+            color: colors.textHighContrast,
+            fontSize: 20,
+            fontWeight: "bold",
+          }}
+        >
           Ajouter le rendez-vous
         </Text>
       </TouchableOpacity>

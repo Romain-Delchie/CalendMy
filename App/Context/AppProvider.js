@@ -1,5 +1,6 @@
 // Exemple: AppProvider.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import API from "../Services/API";
 import AppContext from "./AppContext";
 
 const AppProvider = ({ children }) => {
@@ -23,7 +24,49 @@ const AppProvider = ({ children }) => {
   const updateToDoItems = (newToDoItems) => {
     setToDoItems(newToDoItems);
   };
-
+ API.getCalendmy()
+   .then((res) => {
+     updateUser({
+       ...user,
+       calendmyName: res.data.data[0].attributes.name,
+     });
+     updateEvents(
+       res.data.data[0].attributes.events.data.map((event) => {
+         return {
+           date: event.attributes.date,
+           name: event.attributes.name,
+           begin: event.attributes.begin,
+           end: event.attributes.end,
+           instruction: event.attributes.instruction,
+         };
+       })
+     );
+     updateShoppingLists(
+       res.data.data[0].attributes.shopping_lists.data.map((list) => {
+         return {
+           name: list.attributes.name,
+           listItems: list.attributes.list_items.data.map((item) => {
+             return {
+               name: item.attributes.name,
+               quantity: item.attributes.quantity,
+             };
+           }),
+         };
+       })
+     );
+     updateToDoItems(
+       res.data.data[0].attributes.to_do.data.attributes.todo_items.data.map(
+         (item) => {
+           return {
+             name: item.attributes.name,
+             ranking: item.attributes.ranking,
+           };
+         }
+       )
+     );
+   })
+   .catch((err) => console.log(err));
+nMmmmn
   return (
     <AppContext.Provider
       value={{
