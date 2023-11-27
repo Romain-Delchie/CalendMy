@@ -4,35 +4,41 @@ import moment from "moment";
 import AppContext from "../Context/AppContext";
 import { Calendar as CalendarComponent, Agenda } from "react-native-calendars";
 import ModalAddAppointment from "../Components/Calendar/ModalAddAppointment";
+import { MaterialIcons } from "@expo/vector-icons";
 import colors from "../colors";
 
 export default function Calendar() {
   const { user, updateUser, events, updateEvents } = useContext(AppContext);
-  const [items, setItems] = useState();
+  const [items, setItems] = useState({
+    '2023-11-27': [{ name: 'deplacement Bruxelles', begin: '9:00', end: '19:00' }],
+    '2023-11-27': [{ name: 'dentiste', begin: '9:00', end: '10:00' }, { name: 'rdv chez le coiffeur', begin: '11:00', end: '12:00' }],
+    '2023-11-30': [{ name: 'item 3 - any js object', begin: '9:00', end: '10:00' }, { name: 'any js object', begin: '11:00', end: '14:00' }]
+  });
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isActionItemVisible, setIsActionItemVisible] = useState(false);
 
-  useEffect(() => {
-    const newItems = {};
-    events
-      ?.sort((a, b) => {
-        const timeA = new Date(`1970-01-01T${a.begin}`);
-        const timeB = new Date(`1970-01-01T${b.begin}`);
-        return timeA - timeB;
-      })
-      .map((event) => {
-        newItems[event.date] = [
-          ...(newItems[event.date] || []),
-          {
-            name: event.name,
-            begin: event.begin,
-            end: event.end,
-            instruction: event.instruction,
-          },
-        ];
-      });
-    setItems(newItems);
-  }, [events]);
+  // useEffect(() => {
+  //   const newItems = {};
+  //   events
+  //     ?.sort((a, b) => {
+  //       const timeA = new Date(`1970-01-01T${a.begin}`);
+  //       const timeB = new Date(`1970-01-01T${b.begin}`);
+  //       return timeA - timeB;
+  //     })
+  //     .map((event) => {
+  //       newItems[event.date] = [
+  //         ...(newItems[event.date] || []),
+  //         {
+  //           name: event.name,
+  //           begin: event.begin,
+  //           end: event.end,
+  //           instruction: event.instruction,
+  //         },
+  //       ];
+  //     });
+  //   setItems(newItems);
+  // }, [events]);
 
   const addAppointment = (date, appointment) => {
     const newItems = { ...items };
@@ -42,6 +48,12 @@ export default function Calendar() {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const toggleActionItem = () => {
+    setIsActionItemVisible((prev) => !prev);
+  };
+
+  console.log(isActionItemVisible);
   return (
     <View style={{ flex: 1, padding: 30 }}>
       <Agenda
@@ -62,7 +74,7 @@ export default function Calendar() {
           setSelectedDate(day.dateString);
         }}
         // Callback that gets called when day changes while scrolling agenda list
-        onDayChange={(day) => {}}
+        onDayChange={(day) => { }}
         selected={selectedDate}
         // Fonction pour rendre un élément de rendez-vous
         renderItem={(item) => {
@@ -79,8 +91,8 @@ export default function Calendar() {
               <View>
                 <TouchableOpacity
                   style={styles.allRdv}
-                  onLongPress={() => console.log("long pressed")}
-                  delayLongPress={1000}
+                  onLongPress={toggleActionItem}
+                  delayLongPress={100}
                 >
                   <View style={styles.RdvContainer}>
                     <View style={styles.hours}>
@@ -92,6 +104,8 @@ export default function Calendar() {
                         {" "}
                         {moment(item.end, "HH:mm:ss.SSS").format("HH:mm")}
                       </Text>
+
+
                     </View>
                     <Text
                       style={{
@@ -111,6 +125,17 @@ export default function Calendar() {
                     </Text>
                   </View>
                   <View style={styles.TouchIcon}></View>
+                  {
+                    isActionItemVisible &&
+                    <View style={{ backgroundColor: 'blue' }}>
+                      <TouchableOpacity onPress={() => console.log('edit')}>
+                        <MaterialIcons name="edit" size={40} color="red" />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => console.log('delete')}>
+                        <MaterialIcons name="delete" size={40} color="red" />
+                      </TouchableOpacity>
+                    </View>
+                  }
                 </TouchableOpacity>
               </View>
             );
