@@ -11,6 +11,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import API from "../../Services/API";
 import { Octicons } from "@expo/vector-icons";
 import colors from "../../colors";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 export default function ModalAddAppointment({ onClose }) {
   const { events, updateEvents } = useContext(AppContext);
@@ -129,13 +131,26 @@ export default function ModalAddAppointment({ onClose }) {
       color: colors.textHighContrast,
       borderRadius: 50,
     },
+    btnValContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
     btnValidate: {
-      backgroundColor: colors.backgroundActive,
+      backgroundColor: "green",
       borderRadius: 5,
       padding: 15,
       margin: 30,
-      width: 300,
+      width: 100,
       alignItems: "center",
+    },
+    btnClose: {
+      padding: 15,
+      margin: 30,
+      width: 100,
+      backgroundColor: "red",
+      alignItems: "center",
+      borderRadius: 5,
     },
   });
 
@@ -221,21 +236,18 @@ export default function ModalAddAppointment({ onClose }) {
         onFocus={() => handleFocus("input2")}
         onBlur={() => handleBlur("input2")}
       />
-      <TouchableOpacity
-        title="Ajouter le rendez-vous"
-        onPress={handleAddAppointment}
-        style={styles.btnValidate}
-      >
-        <Text
-          style={{
-            color: colors.textHighContrast,
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
+      <View style={styles.btnValContainer}>
+        <TouchableOpacity
+          title="Ajouter le rendez-vous"
+          onPress={handleAddAppointment}
+          style={styles.btnValidate}
         >
-          Ajouter le rendez-vous
-        </Text>
-      </TouchableOpacity>
+          <AntDesign name="check" size={30} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onClose} style={styles.btnClose}>
+          <Entypo name="cross" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity onPress={onClose} style={styles.btnCross}>
         <Octicons name="x" size={40} />
       </TouchableOpacity>

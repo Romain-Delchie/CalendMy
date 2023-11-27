@@ -26,9 +26,52 @@ export default function Home() {
     toDoItems,
     updateToDoItems,
   } = useContext(AppContext);
-console.log(events);
+  console.log(events);
   // console.log(userConnected.emailAddresses[0].emailAddress);
- 
+  useEffect(() => {
+    API.getCalendmy()
+      .then((res) => {
+        updateUser({
+          ...user,
+          calendmyName: res.data.data[0].attributes.name,
+        });
+        updateEvents(
+          res.data.data[0].attributes.events.data.map((event) => {
+            return {
+              date: event.attributes.date,
+              name: event.attributes.name,
+              begin: event.attributes.begin,
+              end: event.attributes.end,
+              instruction: event.attributes.instruction,
+            };
+          })
+        );
+        updateShoppingLists(
+          res.data.data[0].attributes.shopping_lists.data.map((list) => {
+            return {
+              name: list.attributes.name,
+              listItems: list.attributes.list_items.data.map((item) => {
+                return {
+                  name: item.attributes.name,
+                  quantity: item.attributes.quantity,
+                };
+              }),
+            };
+          })
+        );
+        updateToDoItems(
+          res.data.data[0].attributes.to_do.data.attributes.todo_items.data.map(
+            (item) => {
+              return {
+                name: item.attributes.name,
+                ranking: item.attributes.ranking,
+              };
+            }
+          )
+        );
+      })
+      .catch((err) => console.log(err));
+  }, []);
   if (events === null || toDoItems === null) {
     return null;
   }
@@ -77,20 +120,20 @@ console.log(events);
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        backgroundColor: colors.backgroundElement,
+                        backgroundColor: "white",
                         borderRadius: 15,
                         gap: 10,
                         padding: 10,
-                        borderBottomColor: colors.borderElement,
+                        borderBottomColor: "lightgrey",
                         borderBottomWidth: 2,
-                        borderRightColor: colors.borderElement,
+                        borderRightColor: "lightgrey",
                         borderRightWidth: 2,
                       }}
                     >
                       <View>
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             marginBottom: 10,
                             color: colors.textHighContrast,
                             fontWeight: 700,
@@ -100,7 +143,7 @@ console.log(events);
                         </Text>
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             marginBottom: 10,
                             color: colors.textHighContrast,
                             fontWeight: 700,
@@ -109,17 +152,17 @@ console.log(events);
                           {moment(event.end, "HH:mm:ss.SSS").format("HH:mm")}
                         </Text>
                       </View>
-                      <View style={{ width: "60%" }}>
+                      <View style={{ width: "50%" }}>
                         <Text
                           style={{
-                            fontSize: 18,
+                            fontSize: 16,
                             color: colors.textLowContrast,
                           }}
                         >
                           {event.name}
                         </Text>
                         {event.instruction && (
-                          <Text style={{ fontSize: 16 }}>
+                          <Text style={{ fontSize: 14 }}>
                             {event.instruction}
                           </Text>
                         )}
@@ -136,17 +179,19 @@ console.log(events);
             )}
           </View>
         </ScrollView>
+        
         <View>
           {toDoItems &&
           toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
             <View
               style={{
-                backgroundColor: colors.backgroundActive,
+                  backgroundColor: "white",
+                width: "100%",
                 padding: 15,
                 borderRadius: 10,
-                borderBottomColor: colors.backgroundSolid,
+                borderBottomColor: "lightgrey",
                 borderBottomWidth: 2,
-                borderLeftColor: colors.backgroundSolid,
+                borderLeftColor: "lightgrey",
                 borderLeftWidth: 2,
               }}
             >
