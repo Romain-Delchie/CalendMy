@@ -14,7 +14,11 @@ import colors from "../../colors";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
-export default function ModalAddAppointment({ onClose }) {
+export default function ModalAddAppointment({
+  onClose,
+  setRefresh,
+  setAgendaKey,
+}) {
   const { events, updateEvents } = useContext(AppContext);
   const [date, setDate] = useState(new Date());
   const [startHour, setStartHour] = useState("");
@@ -28,8 +32,10 @@ export default function ModalAddAppointment({ onClose }) {
     input1: false,
     input2: false,
   });
+  const [error, setError] = useState(false);
 
   const handleFocus = (inputName) => {
+    setError(false);
     setInputStates((prevInputStates) => ({
       ...prevInputStates,
       [inputName]: true,
@@ -44,19 +50,22 @@ export default function ModalAddAppointment({ onClose }) {
   };
 
   const onChange = (event, selectedDate) => {
+    setError(false);
     setShow(false);
     const currentDate = selectedDate;
     setDate(currentDate);
     if (startOrEnd == "start") {
       setStartHour(
-        selectedDate.getHours() +
+        (selectedDate.getHours() < 10 ? "0" : "") +
+          selectedDate.getHours() +
           ":" +
           (selectedDate.getMinutes() < 10 ? "0" : "") +
           selectedDate.getMinutes()
       );
     } else if (startOrEnd == "end") {
       setEndHour(
-        selectedDate.getHours() +
+        (selectedDate.getHours() < 10 ? "0" : "") +
+          selectedDate.getHours() +
           ":" +
           (selectedDate.getMinutes() < 10 ? "0" : "") +
           selectedDate.getMinutes()
@@ -96,9 +105,28 @@ export default function ModalAddAppointment({ onClose }) {
       },
     };
 
-    API.addEvent(appointment);
-    updateEvents([...events, appointment]);
-    onClose();
+    console.log(appointment);
+    setRefresh(true);
+    if (
+      appointment.data.name === "" ||
+      appointment.data.begin === ":00" ||
+      appointment.data.end === ":00"
+    ) {
+      setError(true);
+      return;
+    } else {
+      updateEvents([...events, appointment]);
+      API.addEvent(appointment)
+        .then((response) => {
+          console.log(response.data); // Affichez les données de la réponse
+
+          setAgendaKey((prevKey) => prevKey + 1);
+          onClose(); // Fermez la modal
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la requête API :", error.response);
+        });
+    }
   };
   const styles = StyleSheet.create({
     input: {
@@ -260,6 +288,9 @@ export default function ModalAddAppointment({ onClose }) {
           onChange={onChange}
         />
       )}
+      <Text style={{ color: "red" }}>
+        {error ? "Les 4 premiers champs sont obligatoires" : ""}
+      </Text>
     </View>
   );
 }

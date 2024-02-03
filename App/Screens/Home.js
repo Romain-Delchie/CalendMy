@@ -26,7 +26,6 @@ export default function Home() {
     toDoItems,
     updateToDoItems,
   } = useContext(AppContext);
-  console.log(events);
   // console.log(userConnected.emailAddresses[0].emailAddress);
   useEffect(() => {
     API.getCalendmy()
@@ -38,6 +37,7 @@ export default function Home() {
         updateEvents(
           res.data.data[0].attributes.events.data.map((event) => {
             return {
+              id: event.id,
               date: event.attributes.date,
               name: event.attributes.name,
               begin: event.attributes.begin,
@@ -76,14 +76,28 @@ export default function Home() {
     return null;
   }
   return (
-    <View style={{ padding: 20, marginTop: 25, height: "100%" }}>
+    <View
+      style={{
+        height: "100%",
+      }}
+    >
+      <Image
+        source={thiago}
+        style={{
+          width: "120%",
+          height: "100%",
+          position: "absolute",
+          resizeMode: "cover",
+        }}
+      />
       <Header />
       {/* <Button title="Sign Out" onPress={() => signOut()} /> */}
       <View
         style={{
+          backgroundColor: "rgba(0, 120, 190, 0.47)",
+          padding: 20,
           alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: 10,
+          justifyContent: "space-around",
           gap: 10,
           flex: 2,
         }}
@@ -96,7 +110,7 @@ export default function Home() {
               fontSize: 20,
               textTransform: "capitalize",
               fontWeight: 700,
-              color: colors.textHighContrast,
+              color: "whitesmoke",
             }}
           >
             {today}
@@ -119,7 +133,7 @@ export default function Home() {
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent: "space-around",
                         backgroundColor: "white",
                         borderRadius: 15,
                         gap: 10,
@@ -179,13 +193,13 @@ export default function Home() {
             )}
           </View>
         </ScrollView>
-        
+        <View style={{ width: "50%", backgroundColor: "white", height: 1, margin: 10 }}></View>
         <View>
           {toDoItems &&
           toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
             <View
               style={{
-                  backgroundColor: "white",
+                backgroundColor: "white",
                 width: "100%",
                 padding: 15,
                 borderRadius: 10,
@@ -222,15 +236,6 @@ export default function Home() {
             </View>
           )}
         </View>
-
-        <Image
-          source={thiago}
-          style={{
-            borderRadius: 15,
-            width: "120%",
-            height: 200,
-          }}
-        />
       </View>
     </View>
   );

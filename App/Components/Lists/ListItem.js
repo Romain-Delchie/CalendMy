@@ -168,7 +168,6 @@ export default function ListItem({ list }) {
   useEffect(() => {
     setItems(listItems);
   }, []);
-
   const styles = StyleSheet.create({
     listTitleContainer: {
       flexDirection: "row",
@@ -337,7 +336,7 @@ export default function ListItem({ list }) {
       <Modal animationType="slide" transparent={true} visible={modalDeleteAll}>
         <View style={{ backgroundColor: "yellow" }}>
           <Text>
-            Etes vous sur de vouloir supprimer TOUS les produits de la list
+            Etes vous sur de vouloir supprimer TOUS les produits de la liste
           </Text>
           <TextInput
             style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
