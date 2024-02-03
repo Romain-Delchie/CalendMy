@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Touchable,
-  Modal,
-  Button,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import moment from "moment";
 import AppContext from "../Context/AppContext";
@@ -87,6 +79,7 @@ export default function Calendar() {
               begin: event.attributes.begin,
               end: event.attributes.end,
               instruction: event.attributes.instruction,
+              author: event.attributes.author,
             };
           })
         );
@@ -111,6 +104,7 @@ export default function Calendar() {
             begin: event.begin,
             end: event.end,
             instruction: event.instruction,
+            author: event.author,
           },
         ];
       });
@@ -191,6 +185,7 @@ export default function Calendar() {
         //   return <View />;
         // }}
         renderItem={(item) => {
+          console.log(item);
           return (
             <View>
               <TouchableOpacity
@@ -229,6 +224,19 @@ export default function Calendar() {
                     {item?.instruction}
                   </Text>
                 </View>
+                <Image
+                  source={{
+                    uri: item.author,
+                  }}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 100,
+                    position: "absolute",
+                    right: 50,
+                    top: 17,
+                  }}
+                />
                 {iconVisible && (
                   <View
                     style={{

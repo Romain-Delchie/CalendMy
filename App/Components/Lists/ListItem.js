@@ -291,7 +291,7 @@ export default function ListItem({ list }) {
           </View>
         </Modal>
       </View>
-      {items
+      {list.listItems
         .filter((item) => item.list_id === list.id)
         .map((item, index) => (
           <View key={index} style={styles.item}>
@@ -304,7 +304,7 @@ export default function ListItem({ list }) {
             />
           </View>
         ))}
-      {listItems.filter((item) => item.list_id === list.id).length === 0 && (
+      {list.listItems.filter((item) => item.list_id === list.id).length === 0 && (
         <Text>Aucun produit dans cette liste</Text>
       )}
       <TouchableOpacity

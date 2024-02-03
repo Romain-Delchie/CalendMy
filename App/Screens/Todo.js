@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import Icon from "react-native-vector-icons/Entypo";
 import colors from "../colors";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Todo() {
   const todos = [
@@ -91,7 +91,7 @@ export default function Todo() {
         const delta = end[index] - value;
         return Math.round(value + delta * percent);
       });
-      return `rgb(${result.join(',')})`;
+      return `rgb(${result.join(",")})`;
     };
 
     const hue = interpolateColor(startColor, endColor, ranking / maxRanking);
@@ -169,7 +169,11 @@ export default function Todo() {
         >
           Ajouter une tâche
         </Text>
-        <MaterialIcons name="playlist-add" size={40} color={colors.textHighContrast} />
+        <MaterialIcons
+          name="playlist-add"
+          size={40}
+          color={colors.textHighContrast}
+        />
       </TouchableOpacity>
       <Modal animationType="slide" transparent={false} visible={modalVisible}>
         <View
@@ -193,10 +197,16 @@ export default function Todo() {
             }}
             onChangeText={(text) => onChangeText(text)}
           />
-          <TouchableOpacity style={styles.modalButton} onPress={() => handleAddTask()}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => handleAddTask()}
+          >
             <Text>Ajouter une tâche</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => setModalVisible(false)}
+          >
             <Text>Annuler</Text>
           </TouchableOpacity>
         </View>

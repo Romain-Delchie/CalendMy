@@ -1,32 +1,18 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
+import AppContext from "../Context/AppContext";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import colors from "../colors";
 import ListItem from "../Components/Lists/ListItem";
+import { useUser } from "@clerk/clerk-expo";
+import AddList from "../Components/Lists/AddList";
 
 export default function Lists() {
   const Tab = createMaterialTopTabNavigator();
+  const { user } = useUser();
+  const { shoppingLists, updateShoppingLists } = useContext(AppContext);
+  console.log(shoppingLists[0]);
 
-  const accounts = [
-    {
-      name: "John Doe",
-      email: "johndoe@example.com",
-      color: "#336699",
-      image_link: "family.jpg",
-    },
-    {
-      name: "Alice Smith",
-      email: "alice@example.com",
-      color: "#FF9900",
-      image_link: "family.jpg",
-    },
-    {
-      name: "Bob Johnson",
-      email: "bob@example.com",
-      color: "#990000",
-      image_link: "family.jpg",
-    },
-  ];
   const lists = [
     {
       id: 1,
@@ -79,7 +65,6 @@ export default function Lists() {
       justifyContent: "center",
       alignItems: "center",
       flexGrow: 1,
-
     },
 
     buttonList: {
@@ -110,13 +95,17 @@ export default function Lists() {
           tabBarInactiveTintColor: colors.primary,
         }}
       >
-        {lists.map((list, index) => (
+        {shoppingLists.map((list, index) => (
           <Tab.Screen
-            name={lists.length > 3 ? (index + 1).toString() : list.name}
+            name={shoppingLists.length > 2 ? (index + 1).toString() : list.name}
             key={index}
             children={() => <ListItem list={list} />}
           />
         ))}
+        <Tab.Screen
+          name={shoppingLists.length > 2 ? "+" : "Ajouter liste"}
+          children={() => <AddList />}
+        />
       </Tab.Navigator>
     </View>
   );

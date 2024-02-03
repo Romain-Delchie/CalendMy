@@ -13,6 +13,7 @@ import { Octicons } from "@expo/vector-icons";
 import colors from "../../colors";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function ModalAddAppointment({
   onClose,
@@ -33,6 +34,7 @@ export default function ModalAddAppointment({
     input2: false,
   });
   const [error, setError] = useState(false);
+  const { user } = useUser();
 
   const handleFocus = (inputName) => {
     setError(false);
@@ -100,12 +102,12 @@ export default function ModalAddAppointment({
         end: endHour + ":00",
         instruction: instruction,
         date: date,
+        author: user.imageUrl,
         //TO DO : add id logic
         calend_my: 1,
       },
     };
 
-    console.log(appointment);
     setRefresh(true);
     if (
       appointment.data.name === "" ||
@@ -118,7 +120,6 @@ export default function ModalAddAppointment({
       updateEvents([...events, appointment]);
       API.addEvent(appointment)
         .then((response) => {
-          console.log(response.data); // Affichez les données de la réponse
 
           setAgendaKey((prevKey) => prevKey + 1);
           onClose(); // Fermez la modal

@@ -21,6 +21,8 @@ const API = {
   addEvent: (event) => axiosInstance.post(`/events`, event),
   deleteEvent: (id) => axiosInstance.delete(`/events/${id}`),
   updateEvent: (id, event) => axiosInstance.put(`/events/${id}`, event),
+  addShoppingList: (list) => axiosInstance.post(`/shopping-lists`, list),
+  deleteShoppingList: (id) => axiosInstance.delete(`/shopping-lists/${id}`),
 };
 
 export default API;
