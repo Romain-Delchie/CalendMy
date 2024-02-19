@@ -24,7 +24,6 @@ export default function Todo() {
   const [initialData, setInitialData] = useState(sortedTodos);
   const [modalVisible, setModalVisible] = useState(false);
   const [text, onChangeText] = useState("");
-
   // Triez les tâches par importance (ranking)
   useEffect(() => {
     const myData = [...initialData];
@@ -70,8 +69,8 @@ export default function Todo() {
       console.log({ data: { ranking: item.ranking } });
       API.updateToDoItems(item.id, { data: item })
         .then((res) => {
-          console.log(res.data);
           setInitialData(updatedData);
+          updateToDoItems(updatedData);
         })
         .catch((error) => {
           console.log(error.response.data);
@@ -83,7 +82,6 @@ export default function Todo() {
   const handleDelete = (id) => {
     // Filter out the item with the specified id
     const updatedData = sortedTodos.filter((item) => item.id !== id);
-    console.log(updatedData);
     // After filtering, update the rankings of the remaining items
     const updatedDataWithRanking = updatedData.map((item, index) => ({
       ...item,
@@ -101,6 +99,7 @@ export default function Todo() {
     });
     API.deleteToDoItem(id);
     setInitialData(updatedDataWithRanking);
+    updateToDoItems(updatedDataWithRanking);
   };
 
   const handleAddTask = () => {
@@ -108,6 +107,7 @@ export default function Todo() {
       name: text,
       ranking: sortedTodos.length,
       author: user.imageUrl,
+      to_do: 1,
     };
     console.log(newTask);
     API.addToDoItem({ data: newTask })

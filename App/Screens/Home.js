@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import Header from "../Components/Home/Header";
 import API from "../Services/API";
@@ -13,6 +13,7 @@ moment.locale("fr");
 
 export default function Home() {
   const { isLoaded, signOut } = useAuth();
+  const [handleRefresh, setHandleRefresh] = useState(false);
   const today = moment().format("dddd Do MMMM YYYY");
   const todayDate = moment().format("YYYY-MM-DD");
   const userConnected = useUser().user;
@@ -21,7 +22,6 @@ export default function Home() {
     updateUser,
     events,
     updateEvents,
-    shoppingLists,
     updateShoppingLists,
     toDoItems,
     updateToDoItems,
@@ -30,6 +30,9 @@ export default function Home() {
   useEffect(() => {
     API.getCalendmy()
       .then((res) => {
+        console.log(
+          res.data.data[0].attributes.to_do.data.attributes.todo_items
+        );
         updateUser({
           ...user,
           calendmyName: res.data.data[0].attributes.name,
@@ -77,8 +80,7 @@ export default function Home() {
         );
       })
       .catch((err) => console.log(err));
-  }, []);
-
+  }, [handleRefresh]);
   if (events === null || toDoItems === null) {
     return null;
   }
@@ -97,7 +99,7 @@ export default function Home() {
           resizeMode: "cover",
         }}
       />
-      <Header />
+      <Header setHandleRefresh={setHandleRefresh} />
       {/* <Button title="Sign Out" onPress={() => signOut()} /> */}
       <View
         style={{
@@ -209,8 +211,7 @@ export default function Home() {
           }}
         ></View>
         <View>
-          {toDoItems &&
-          toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
+          {toDoItems && toDoItems.length > 0 ? (
             <View
               style={{
                 backgroundColor: "white",

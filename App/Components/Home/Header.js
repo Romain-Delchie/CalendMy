@@ -1,10 +1,10 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { useUser } from "@clerk/clerk-expo";
-import { Ionicons } from "@expo/vector-icons";
 import colors from "../../colors";
+import { Feather } from "@expo/vector-icons";
 
-export default function Header() {
+export default function Header({ setHandleRefresh }) {
   const { isLoaded, isSignedIn, user } = useUser();
   if (!isLoaded || !isSignedIn) {
     return null;
@@ -16,7 +16,7 @@ export default function Header() {
         flexDirection: "row",
         gap: 7,
         alignItems: "center",
-              paddingTop: 50,
+        paddingTop: 50,
         paddingHorizontal: 20,
         paddingBottom: 10,
         justifyContent: "space-between",
@@ -41,7 +41,13 @@ export default function Header() {
           <Text style={{ fontWeight: 700 }}>{user.fullName}</Text>
         </View>
       </View>
-      <Ionicons name="notifications-outline" size={30} color="black" />
+      <TouchableOpacity
+        onPress={() => {
+          setHandleRefresh((prev) => !prev);
+        }}
+      >
+        <Feather name="refresh-ccw" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
 }

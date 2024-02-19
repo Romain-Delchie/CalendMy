@@ -1,6 +1,5 @@
 // Exemple: AppProvider.js
-import React, { useState, useEffect } from "react";
-import API from "../Services/API";
+import React, { useState } from "react";
 import AppContext from "./AppContext";
 
 const AppProvider = ({ children }) => {
