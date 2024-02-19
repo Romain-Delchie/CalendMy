@@ -19,7 +19,7 @@ const LoginStyle = StyleSheet.create({
   family: {
     width: Dimensions.get("window").width * 0.8,
     height: Dimensions.get("window").height * 0.6,
-    borderRadius: 50,
+    borderRadius: 10,
   },
   buttonContainer: {
     color: "#FAFAFA",
@@ -32,7 +32,7 @@ const LoginStyle = StyleSheet.create({
     width: Dimensions.get("window").width * 0.8,
     height: Dimensions.get("window").height * 0.1,
     backgroundColor: "#0077C0",
-    borderRadius: 50,
+    borderRadius: 10,
     padding: 10,
     margin: 10,
     textAlign: "center",
