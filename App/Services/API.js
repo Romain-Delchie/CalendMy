@@ -23,6 +23,12 @@ const API = {
   updateEvent: (id, event) => axiosInstance.put(`/events/${id}`, event),
   addShoppingList: (list) => axiosInstance.post(`/shopping-lists`, list),
   deleteShoppingList: (id) => axiosInstance.delete(`/shopping-lists/${id}`),
+  updateShoppingList: (id, list) =>
+    axiosInstance.put(`/shopping-lists/${id}`, list),
+  addItemToList: (item) => axiosInstance.post(`/list-items`, item),
+  deleteItemFromList: (id) => axiosInstance.delete(`/list-items/${id}`),
+  updateItemFromList: (id, item) =>
+    axiosInstance.put(`/list-items/${id}`, item),
 };
 
 export default API;

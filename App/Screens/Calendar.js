@@ -185,7 +185,6 @@ export default function Calendar() {
         //   return <View />;
         // }}
         renderItem={(item) => {
-          console.log(item);
           return (
             <View>
               <TouchableOpacity

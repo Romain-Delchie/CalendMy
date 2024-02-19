@@ -11,50 +11,6 @@ export default function Lists() {
   const Tab = createMaterialTopTabNavigator();
   const { user } = useUser();
   const { shoppingLists, updateShoppingLists } = useContext(AppContext);
-  console.log(shoppingLists[0]);
-
-  const lists = [
-    {
-      id: 1,
-      name: "Carrefour",
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Leroy Merlin",
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Action",
-      agenda_id: 1,
-    },
-    {
-      id: 4,
-      name: "Auchan",
-      agenda_id: 1,
-    },
-  ];
-  const listItems = [
-    {
-      name: "Lait",
-      list_id: 1,
-      account_id: 1,
-      agenda_id: 1,
-    },
-    {
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      name: "peinture",
-      list_id: 2,
-      account_id: 2,
-      agenda_id: 2,
-    },
-  ];
 
   const styles = StyleSheet.create({
     containerList: {

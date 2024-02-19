@@ -9,7 +9,7 @@ import API from "../../Services/API";
 export default function AddList() {
   const [nameList, setNameList] = useState("");
   const { shoppingLists, updateShoppingLists } = useContext(AppContext);
-  console.log(shoppingLists);
+  console.log(shoppingLists[0]);
 
   const handleSubmit = () => {
     if (nameList === "") {

@@ -3,171 +3,30 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  Image,
   Button,
   Modal,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import colors from "../../colors";
 import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { TextInput } from "react-native-gesture-handler";
+import API from "../../Services/API";
 
 export default function ListItem({ list }) {
+  const [listState, setListState] = useState(list);
+  const { shoppingLists, updateShoppingLists } = useContext(AppContext);
   const { user } = useUser();
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [text, onChangeText] = useState("");
+  const [newItem, setNewItem] = useState({ name: "", quantity: "" });
 
   const [items, setItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDeleteAll, setModalDeleteAll] = useState(false);
 
-  const listItems = [
-    {
-      id: 1,
-      name: "Lait",
-      list_id: 1,
-      account_id: 1,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "Dentifrice avec de la menthe",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 2,
-      name: "Pain",
-      list_id: 1,
-      account_id: 2,
-      agenda_id: 1,
-    },
-    {
-      id: 3,
-      name: "peinture",
-      list_id: 2,
-      account_id: 2,
-      agenda_id: 2,
-    },
-  ];
-
-  useEffect(() => {
-    setItems(listItems);
-  }, []);
   const styles = StyleSheet.create({
     listTitleContainer: {
       flexDirection: "row",
@@ -250,33 +109,78 @@ export default function ListItem({ list }) {
       width: 200,
     },
   });
+  const handleDeleteList = (list) => {
+    API.deleteShoppingList(list.id).then(() => {
+      updateShoppingLists(
+        shoppingLists.filter((item) => item.list_id !== list.id)
+      );
+    });
+  };
 
   const handleDeleteItem = (item) => {
-    setItems(items.filter((i) => i.id !== item.id));
+    API.deleteItemFromList(item.id)
+      .then(() => {
+        const newItems = listState.listItems.filter(
+          (listItem) => listItem.id !== item.id
+        );
+        const newShoppingList = {
+          ...listState,
+          listItems: newItems,
+        };
+        updateShoppingLists(
+          shoppingLists.map((oneList) =>
+            oneList.id === newShoppingList.id ? newShoppingList : oneList
+          )
+        );
+        setListState(newShoppingList);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      });
   };
 
   const handleAddItem = () => {
-    const newItem = {
-      id: items.length + 1,
-      name: text,
-      list_id: list.id,
-      account_id: user.id,
-      agenda_id: 1,
+    const itemToAdd = {
+      data: {
+        name: newItem.name,
+        quantity: newItem.quantity,
+        shopping_list: listState.id,
+        author: user.imageUrl,
+      },
     };
-    setItems([...items, newItem]);
+    API.addItemToList(itemToAdd)
+      .then((res) => {
+        itemToAdd.data.id = res.data.data.id;
+        const newShoppingList = {
+          ...listState,
+          listItems: [...listState.listItems, itemToAdd.data],
+        };
+        updateShoppingLists(
+          shoppingLists.map((oneList) =>
+            oneList.id === newShoppingList.id ? newShoppingList : oneList
+          )
+        );
+        setListState(newShoppingList);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      });
+
     setModalVisible(false);
-    onChangeText("");
+    setNewItem({ name: "", quantity: "" });
   };
 
   const handleDeleteAllItem = () => {
-    setItems(items.filter((item) => item.list_id !== list.id));
+    setItems(items.filter((item) => item.list_id !== listState.id));
     setModalDeleteAll(false);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.itemContainer}>
       <View style={styles.listTitleContainer}>
-        <Text style={styles.listTitle}>{list.name}</Text>
+        <Text style={styles.listTitle}>{listState.name}</Text>
         <Entypo
           name="trash"
           size={24}
@@ -286,25 +190,34 @@ export default function ListItem({ list }) {
         <Modal animationType="slide" transparent={true} visible={confirmDelete}>
           <View style={styles.modalDeleteList}>
             <Text>Êtes-vous sûr de vouloir supprimer la liste ?</Text>
-            <Button title="Oui" onPress={() => handleDeleteList(list)} />
+            <Button title="Oui" onPress={() => handleDeleteList(listState)} />
             <Button title="Non" onPress={() => setConfirmDelete(false)} />
           </View>
         </Modal>
       </View>
-      {list.listItems
-        .filter((item) => item.list_id === list.id)
-        .map((item, index) => (
-          <View key={index} style={styles.item}>
-            <Text style={styles.textItem}>{item.name}</Text>
-            <Entypo
-              onPress={() => handleDeleteItem(item)}
-              name="trash"
-              size={24}
-              color={colors.textHighContrast}
-            />
-          </View>
-        ))}
-      {list.listItems.filter((item) => item.list_id === list.id).length === 0 && (
+      {listState.listItems.map((item, index) => (
+        <View key={index} style={styles.item}>
+          <Text style={styles.textItem}>{item.name}</Text>
+          <Image
+            source={{ uri: item.author }}
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 100,
+              position: "absolute",
+              right: 50,
+              top: 17,
+            }}
+          />
+          <Entypo
+            onPress={() => handleDeleteItem(item)}
+            name="trash"
+            size={24}
+            color={colors.textHighContrast}
+          />
+        </View>
+      ))}
+      {list.listItems.length === 0 && (
         <Text>Aucun produit dans cette liste</Text>
       )}
       <TouchableOpacity
@@ -319,8 +232,14 @@ export default function ListItem({ list }) {
           <Text>Ajouter un nom de produit :</Text>
           <TextInput
             style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-            onChangeText={(text) => onChangeText(text)}
-            value={text}
+            onChangeText={(text) => setNewItem({ ...newItem, name: text })}
+            value={newItem.name}
+          />
+          <Text>quantité: (facultatif)</Text>
+          <TextInput
+            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+            onChangeText={(text) => setNewItem({ ...newItem, quantity: text })}
+            value={newItem.quantity}
           />
           <Button title="Oui" onPress={handleAddItem} />
           <Button title="Non" onPress={() => setModalVisible(false)} />
@@ -338,11 +257,11 @@ export default function ListItem({ list }) {
           <Text>
             Etes vous sur de vouloir supprimer TOUS les produits de la liste
           </Text>
-          <TextInput
+          {/* <TextInput
             style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
             onChangeText={(text) => onChangeText(text)}
             value={text}
-          />
+          /> */}
           <Button title="Oui" onPress={handleDeleteAllItem} />
           <Button title="Non" onPress={() => setModalDeleteAll(false)} />
         </View>

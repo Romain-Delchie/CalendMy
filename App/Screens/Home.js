@@ -43,17 +43,22 @@ export default function Home() {
               begin: event.attributes.begin,
               end: event.attributes.end,
               instruction: event.attributes.instruction,
+              author: event.attributes.author,
             };
           })
         );
         updateShoppingLists(
           res.data.data[0].attributes.shopping_lists.data.map((list) => {
             return {
+              id: list.id,
               name: list.attributes.name,
               listItems: list.attributes.list_items.data.map((item) => {
                 return {
+                  id: item.id,
                   name: item.attributes.name,
                   quantity: item.attributes.quantity,
+                  author: item.attributes.author,
+                  shopping_list_id: list.id,
                 };
               }),
             };
@@ -72,6 +77,7 @@ export default function Home() {
       })
       .catch((err) => console.log(err));
   }, []);
+
   if (events === null || toDoItems === null) {
     return null;
   }
@@ -193,7 +199,14 @@ export default function Home() {
             )}
           </View>
         </ScrollView>
-        <View style={{ width: "50%", backgroundColor: "white", height: 1, margin: 10 }}></View>
+        <View
+          style={{
+            width: "50%",
+            backgroundColor: "white",
+            height: 1,
+            margin: 10,
+          }}
+        ></View>
         <View>
           {toDoItems &&
           toDoItems.filter((item) => item.ranking === 1).length > 0 ? (
