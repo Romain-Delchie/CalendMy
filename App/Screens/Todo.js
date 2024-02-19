@@ -49,9 +49,7 @@ export default function Todo() {
   const handleDragEnd = ({ data, from, to }) => {
     const draggedItem = data.find((item) => item.ranking === from);
     const draggedItems = data.slice(from, to + 1);
-    console.log(data);
     const updatedData = data.map((item) => {
-      console.log(item.ranking + " " + from + " " + to);
       if (item.ranking === from) {
         return { ...item, ranking: to };
       } else if (from < to) {
@@ -66,14 +64,13 @@ export default function Todo() {
       return item;
     });
     updatedData.map((item) => {
-      console.log({ data: { ranking: item.ranking } });
       API.updateToDoItems(item.id, { data: item })
         .then((res) => {
           setInitialData(updatedData);
           updateToDoItems(updatedData);
         })
         .catch((error) => {
-          console.log(error.response.data);
+          console.error(error.response.data);
           alert("Erreur lors de la mise à jour des tâches");
         });
     });
@@ -93,7 +90,7 @@ export default function Todo() {
           setInitialData(updatedDataWithRanking);
         })
         .catch((error) => {
-          console.log(error.response.data);
+          console.error(error.response.data);
           alert("Erreur lors de la mise à jour des tâches");
         });
     });
@@ -109,7 +106,6 @@ export default function Todo() {
       author: user.imageUrl,
       to_do: 1,
     };
-    console.log(newTask);
     API.addToDoItem({ data: newTask })
       .then((res) => {
         const updatedData = [
@@ -120,7 +116,7 @@ export default function Todo() {
         setModalVisible(false);
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.error(error.response.data);
         alert("Erreur lors de la mise à jour des tâches");
       });
   };

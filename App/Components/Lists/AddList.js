@@ -44,7 +44,7 @@ export default function AddList() {
           navigation.navigate(listIndex);
         }, 200);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
   };

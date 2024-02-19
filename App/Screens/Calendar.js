@@ -84,7 +84,7 @@ export default function Calendar() {
           })
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, [agendaKey]);
 
   useEffect(() => {
@@ -131,12 +131,8 @@ export default function Calendar() {
         setAgendaKey(agendaKey + 1);
         setIconVisible(false);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => console.error(err.message));
   };
-
-  useEffect(() => {
-    console.log(iconVisible);
-  }, [iconVisible]);
 
   if (isloading)
     return (

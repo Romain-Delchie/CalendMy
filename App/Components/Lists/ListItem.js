@@ -109,7 +109,6 @@ export default function ListItem({ list }) {
     },
   });
   const handleDeleteList = (oneList) => {
-    console.log(oneList);
     API.deleteShoppingList(oneList.id)
       .then(() => {
         updateShoppingLists(

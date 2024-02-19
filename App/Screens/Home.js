@@ -30,9 +30,6 @@ export default function Home() {
   useEffect(() => {
     API.getCalendmy()
       .then((res) => {
-        console.log(
-          res.data.data[0].attributes.to_do.data.attributes.todo_items
-        );
         updateUser({
           ...user,
           calendmyName: res.data.data[0].attributes.name,
@@ -79,7 +76,7 @@ export default function Home() {
           )
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, [handleRefresh]);
   if (events === null || toDoItems === null) {
     return null;
