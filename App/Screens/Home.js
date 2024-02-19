@@ -90,7 +90,8 @@ export default function Home() {
       <Image
         source={thiago}
         style={{
-          width: "120%",
+          width: "100%",
+          top: 100,
           height: "100%",
           position: "absolute",
           resizeMode: "cover",
