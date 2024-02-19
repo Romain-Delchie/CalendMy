@@ -5,36 +5,47 @@ import colors from "../../colors";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import API from "../../Services/API";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AddList() {
   const [nameList, setNameList] = useState("");
   const { shoppingLists, updateShoppingLists } = useContext(AppContext);
-  console.log(shoppingLists[0]);
+  const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (nameList === "") {
       alert("Veuillez renseigner un nom de liste");
     } else {
-      const list = {
-        data: {
-          name: nameList,
-          //TO DO : add id logic
-          calend_my: 1,
-        },
-      };
-      API.addShoppingList(list)
-        .then((res) => {
-          updateShoppingLists([
-            ...shoppingLists,
-            {
-              name: res.data.data.attributes.name,
-              listItems: [],
-            },
-          ]);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const list = {
+          data: {
+            name: nameList,
+            calend_my: 1,
+          },
+        };
+        const res = await API.addShoppingList(list);
+        const newShoppingLists = [
+          ...shoppingLists,
+          {
+            name: res.data.data.attributes.name,
+            id: res.data.data.id,
+            listItems: [],
+          },
+        ];
+        updateShoppingLists(newShoppingLists);
+
+        setNameList("");
+
+        const listIndex =
+          shoppingLists.length > 1
+            ? (shoppingLists.length + 1).toString()
+            : res.data.data.attributes.name;
+        setTimeout(() => {
+          navigation.navigate(listIndex);
+        }, 200);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -59,6 +70,7 @@ export default function AddList() {
           borderWidth: 1,
           marginBottom: 20,
         }}
+        value={nameList}
         placeholder="Nom de la liste"
         onChangeText={(text) => setNameList(text)}
       />

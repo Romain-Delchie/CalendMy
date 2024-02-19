@@ -15,6 +15,7 @@ import { Entypo } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { TextInput } from "react-native-gesture-handler";
 import API from "../../Services/API";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ListItem({ list }) {
   const [listState, setListState] = useState(list);
@@ -22,8 +23,6 @@ export default function ListItem({ list }) {
   const { user } = useUser();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [newItem, setNewItem] = useState({ name: "", quantity: "" });
-
-  const [items, setItems] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalDeleteAll, setModalDeleteAll] = useState(false);
 
@@ -109,12 +108,19 @@ export default function ListItem({ list }) {
       width: 200,
     },
   });
-  const handleDeleteList = (list) => {
-    API.deleteShoppingList(list.id).then(() => {
-      updateShoppingLists(
-        shoppingLists.filter((item) => item.list_id !== list.id)
-      );
-    });
+  const handleDeleteList = (oneList) => {
+    console.log(oneList);
+    API.deleteShoppingList(oneList.id)
+      .then(() => {
+        updateShoppingLists(
+          shoppingLists.filter((item) => item.id !== oneList.id)
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      });
+    setConfirmDelete(false);
   };
 
   const handleDeleteItem = (item) => {
@@ -173,7 +179,22 @@ export default function ListItem({ list }) {
   };
 
   const handleDeleteAllItem = () => {
-    setItems(items.filter((item) => item.list_id !== listState.id));
+    listState.listItems.map((item) => {
+      API.deleteItemFromList(item.id).catch((err) => {
+        console.error(err);
+        alert(err);
+      });
+    });
+    const newShoppingList = {
+      ...listState,
+      listItems: [],
+    };
+    updateShoppingLists(
+      shoppingLists.map((oneList) =>
+        oneList.id === newShoppingList.id ? newShoppingList : oneList
+      )
+    );
+    setListState(newShoppingList);
     setModalDeleteAll(false);
   };
 
@@ -228,21 +249,67 @@ export default function ListItem({ list }) {
         <Entypo name="plus" size={24} color={colors.textHighContrast} />
       </TouchableOpacity>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <View style={{ backgroundColor: "yellow" }}>
+        <View
+          style={{
+            height: "100%",
+            backgroundColor: "whitesmoke",
+            padding: 30,
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+        >
           <Text>Ajouter un nom de produit :</Text>
           <TextInput
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderWidth: 1,
+              marginTop: 5,
+              marginBottom: 50,
+            }}
             onChangeText={(text) => setNewItem({ ...newItem, name: text })}
             value={newItem.name}
           />
           <Text>quantité: (facultatif)</Text>
           <TextInput
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderWidth: 1,
+              marginTop: 5,
+              marginBottom: 50,
+            }}
             onChangeText={(text) => setNewItem({ ...newItem, quantity: text })}
             value={newItem.quantity}
           />
-          <Button title="Oui" onPress={handleAddItem} />
-          <Button title="Non" onPress={() => setModalVisible(false)} />
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <TouchableOpacity
+              onPress={handleAddItem}
+              style={{
+                backgroundColor: "green",
+                borderRadius: 5,
+                padding: 15,
+                margin: 30,
+                width: 100,
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="check" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                padding: 15,
+                margin: 30,
+                width: 100,
+                backgroundColor: "red",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Entypo name="cross" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
       <TouchableOpacity
@@ -257,11 +324,6 @@ export default function ListItem({ list }) {
           <Text>
             Etes vous sur de vouloir supprimer TOUS les produits de la liste
           </Text>
-          {/* <TextInput
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-            onChangeText={(text) => onChangeText(text)}
-            value={text}
-          /> */}
           <Button title="Oui" onPress={handleDeleteAllItem} />
           <Button title="Non" onPress={() => setModalDeleteAll(false)} />
         </View>

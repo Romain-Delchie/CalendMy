@@ -60,7 +60,7 @@ export default function Lists() {
         ))}
         <Tab.Screen
           name={shoppingLists.length > 2 ? "+" : "Ajouter liste"}
-          children={() => <AddList />}
+          component={AddList}
         />
       </Tab.Navigator>
     </View>
