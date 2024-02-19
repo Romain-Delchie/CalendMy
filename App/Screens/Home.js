@@ -68,6 +68,7 @@ export default function Home() {
           res.data.data[0].attributes.to_do.data.attributes.todo_items.data.map(
             (item) => {
               return {
+                id: item.id,
                 name: item.attributes.name,
                 ranking: item.attributes.ranking,
               };
@@ -232,7 +233,7 @@ export default function Home() {
                 Tâches prioritaires
               </Text>
               {toDoItems
-                .filter((item) => item.ranking === 1)
+                .filter((item) => item.ranking === 0)
                 .map((item, index) => {
                   return (
                     <Text key={index} style={{ fontSize: 16 }}>

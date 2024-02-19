@@ -29,6 +29,9 @@ const API = {
   deleteItemFromList: (id) => axiosInstance.delete(`/list-items/${id}`),
   updateItemFromList: (id, item) =>
     axiosInstance.put(`/list-items/${id}`, item),
+  addToDoItem: (item) => axiosInstance.post(`/todo-items`, item),
+  deleteToDoItem: (id) => axiosInstance.delete(`/todo-items/${id}`),
+  updateToDoItems: (id, item) => axiosInstance.put(`/todo-items/${id}`, item),
 };
 
 export default API;

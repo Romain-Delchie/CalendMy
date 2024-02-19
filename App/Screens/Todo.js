@@ -6,71 +6,21 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import Icon from "react-native-vector-icons/Entypo";
 import colors from "../colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import API from "../Services/API";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function Todo() {
-  const todos = [
-    {
-      id: 2,
-      name: "B",
-      ranking: 2,
-    },
-    {
-      id: 1,
-      name: "A",
-      ranking: 1,
-    },
-    {
-      id: 3,
-      name: "C",
-      ranking: 0,
-    },
-    {
-      id: 4,
-      name: "D",
-      ranking: 3,
-    },
-    {
-      id: 5,
-      name: "E",
-      ranking: 4, // Moins important
-    },
-    {
-      id: 6,
-      name: "F",
-      ranking: 5, // Moins important
-    },
-    {
-      id: 7,
-      name: "G",
-      ranking: 6, // Moins important
-    },
-    {
-      id: 8,
-      name: "H",
-      ranking: 7, // Moins important
-    },
-    {
-      id: 9,
-      name: "I",
-      ranking: 8, // Moins important
-    },
-    {
-      id: 10,
-      name: "J",
-      ranking: 9, // Moins important
-    },
-    {
-      id: 11,
-      name: "K",
-      ranking: 10, // Moins important
-    },
-  ];
-  const [sortedTodos, setSortedTodos] = useState(todos);
+  const { toDoItems, updateToDoItems } = useContext(AppContext);
+  const { user } = useUser();
+  const [sortedTodos, setSortedTodos] = useState(toDoItems);
   const [initialData, setInitialData] = useState(sortedTodos);
   const [modalVisible, setModalVisible] = useState(false);
   const [text, onChangeText] = useState("");
@@ -100,7 +50,9 @@ export default function Todo() {
   const handleDragEnd = ({ data, from, to }) => {
     const draggedItem = data.find((item) => item.ranking === from);
     const draggedItems = data.slice(from, to + 1);
+    console.log(data);
     const updatedData = data.map((item) => {
+      console.log(item.ranking + " " + from + " " + to);
       if (item.ranking === from) {
         return { ...item, ranking: to };
       } else if (from < to) {
@@ -114,35 +66,64 @@ export default function Todo() {
       }
       return item;
     });
-
-    setInitialData(updatedData);
+    updatedData.map((item) => {
+      console.log({ data: { ranking: item.ranking } });
+      API.updateToDoItems(item.id, { data: item })
+        .then((res) => {
+          console.log(res.data);
+          setInitialData(updatedData);
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          alert("Erreur lors de la mise à jour des tâches");
+        });
+    });
   };
 
   const handleDelete = (id) => {
     // Filter out the item with the specified id
     const updatedData = sortedTodos.filter((item) => item.id !== id);
-
+    console.log(updatedData);
     // After filtering, update the rankings of the remaining items
     const updatedDataWithRanking = updatedData.map((item, index) => ({
       ...item,
       ranking: index,
     }));
-
+    updatedDataWithRanking.map((item) => {
+      API.updateToDoItems(item.id, { data: item })
+        .then((res) => {
+          setInitialData(updatedDataWithRanking);
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          alert("Erreur lors de la mise à jour des tâches");
+        });
+    });
+    API.deleteToDoItem(id);
     setInitialData(updatedDataWithRanking);
   };
 
   const handleAddTask = () => {
     const newTask = {
-      id: sortedTodos.length + 1,
       name: text,
       ranking: sortedTodos.length,
+      author: user.imageUrl,
     };
-    const updatedData = [...sortedTodos, newTask];
-    setInitialData(updatedData);
-    setModalVisible(false);
+    console.log(newTask);
+    API.addToDoItem({ data: newTask })
+      .then((res) => {
+        const updatedData = [
+          ...sortedTodos,
+          { ...newTask, id: res.data.data.id },
+        ];
+        setInitialData(updatedData);
+        setModalVisible(false);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        alert("Erreur lors de la mise à jour des tâches");
+      });
   };
-
-  console.log(sortedTodos);
 
   return (
     <View style={{ paddingBottom: 200 }}>
@@ -197,18 +178,34 @@ export default function Todo() {
             }}
             onChangeText={(text) => onChangeText(text)}
           />
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => handleAddTask()}
-          >
-            <Text>Ajouter une tâche</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text>Annuler</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <TouchableOpacity
+              onPress={() => handleAddTask()}
+              style={{
+                backgroundColor: "green",
+                borderRadius: 5,
+                padding: 15,
+                margin: 30,
+                width: 100,
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="check" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                padding: 15,
+                margin: 30,
+                width: 100,
+                backgroundColor: "red",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Entypo name="cross" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
       <DraggableFlatList
